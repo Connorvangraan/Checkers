@@ -1,3 +1,5 @@
+import javafx.application.Application;
+
 import java.util.Scanner;
 
 public class Game {
@@ -13,12 +15,25 @@ public class Game {
 
     public void run(){
 
+        //BoardGUI gui = new BoardGUI();
+
+        new Thread(() -> Application.launch(BoardGUI.class)).start();
+
+        BoardGUI gui = new BoardGUI();
+
+
+
         boolean running = true;
 
         while (running){
             if (player == 0){
                 int[][] move = getUserMove();
-                b.makeMove(move[0],move[1],0);
+                if (checkLegalMove(move)){
+                    b.makeMove(move[0],move[1],0);
+                }
+                else{
+                    System.out.println("Invalid move");
+                }
             }
 
         }
@@ -48,4 +63,9 @@ public class Game {
         int [] t = new int[] {Integer.valueOf(n[0]), Integer.valueOf(n[1])};
         return t;
     }
+
+    public boolean checkLegalMove(int[][] move){
+        return b.validMove(move[0],move[1]);
+    }
+
 }

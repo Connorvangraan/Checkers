@@ -80,7 +80,6 @@ public class Board {
             b[y[0]][y[1]] = b[x[0]][x[1]];
             b[x[0]][x[1]] = empty;
         }
-
         showBoard();
     }
 
