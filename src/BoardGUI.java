@@ -31,18 +31,16 @@ public class BoardGUI extends Application {
     @Override
     public void start(Stage s) {
         s.setTitle("Checkers");
-
         setUpBoard();
-
         Scene sc = new Scene(g, windowSize, windowSize);
         s.setScene(sc);
         s.show();
     }
 
-    public void setUpBoard(){
+    public void setUpBoard() {
         for (int row=0; row<8; row++){
-            for (int col=0; col<8; col++){
-                if (row%2 != col%2){
+            for (int col=0; col<8; col++) {
+                if (row%2 != col%2) {
                     Region r = new Region();
                     r.setStyle("-fx-background-color: red; -fx-border-style: solid; -fx-border-width: 2; -fx-border-color: black; -fx-min-width: 75; -fx-min-height:75; -fx-max-width:75; -fx-max-height: 75;");
                     GridPane.setRowIndex(r, row);
@@ -62,6 +60,13 @@ public class BoardGUI extends Application {
                         GridPane.setColumnIndex(circle, col);
                         g.getChildren().add(circle);
                     }
+
+                    else{
+                        Circle circle = makeCircle(Color.TRANSPARENT);
+                        GridPane.setRowIndex(circle,row);
+                        GridPane.setColumnIndex(circle, col);
+                        g.getChildren().add(circle);
+                    }
                 }
                 ColumnConstraints colcon = new ColumnConstraints();
                 colcon.setHalignment(HPos.CENTER);
@@ -70,10 +75,9 @@ public class BoardGUI extends Application {
         }
     }
 
-    public Circle makeCircle(Color c){
+    public Circle makeCircle(Color c) {
         Circle  circle = new Circle(25);
         circle.setFill(c);
-
         return circle;
     }
 

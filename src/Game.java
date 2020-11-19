@@ -14,14 +14,8 @@ public class Game {
     }
 
     public void run(){
-
-        //BoardGUI gui = new BoardGUI();
-
         new Thread(() -> Application.launch(BoardGUI.class)).start();
-
         BoardGUI gui = new BoardGUI();
-
-
 
         boolean running = true;
 
@@ -35,12 +29,7 @@ public class Game {
                     System.out.println("Invalid move");
                 }
             }
-
         }
-
-        //int[] x = new int[] {2,0};
-        //int[] y = new int[] {3,0};
-        //b.makeMove(x,y,1);
     }
 
     public int[][] getUserMove(){

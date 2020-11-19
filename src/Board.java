@@ -48,6 +48,7 @@ public class Board {
     public void showBoard() {
         String printb = "";
         for (int row = 0; row < b.length; row++) {
+            printb = printb.concat("Row:"+row+"  ");
             for (int col = 0; col < b[row].length; col++) {
                 if (row < 3 || row > 4) {
                     if (row % 2 == 0) {
@@ -75,6 +76,7 @@ public class Board {
         System.out.println(printb);
     }
 
+    // from x to y
     public void makeMove(int[] x, int[] y, int player){
         if (validMove(x,y)){
             b[y[0]][y[1]] = b[x[0]][x[1]];
@@ -84,10 +86,39 @@ public class Board {
     }
 
     public boolean validMove(int[] x, int[] y){
-        if (b[y[0]][y[1]] == empty || b[y[0]][y[1]] == b[x[0]][x[1]]+1 || b[y[0]][y[1]] == b[x[0]][x[1]]-1){
-            return true;
+        if (b[y[0]][y[1]] == empty){
+            if(x[0]%2 == 0){
+                if(x[1] == 0){
+                    if(y[1] == x[1] || y[1] == x[1]+1){
+                        return true;
+                    }
+                }
+                else if(x[1] == 3){
+                    if (y[1] == x[1]){
+                        return true;
+                    }
+                }
+                else if(y[1] == x[1] || y[1] == x[1]+1){
+                    return true;
+                }
+            }
+            else {
+                if(x[1] == 0){
+                    if(y[1] == x[1]){
+                        return true;
+                    }
+                }
+                else if(x[1] == 3){
+                    if(y[1] == x[1] || y[1] == x[1]+1){
+                        return true;
+                    }
+                }
+                else if(y[1] == x[1] || y[1] == x[1]-1){
+                    return true;
+                }
+            }
         }
-        System.out.println("Invalid move");
+        //System.out.println("Invalid move");
         return false;
     }
 }
