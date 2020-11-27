@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -38,6 +39,7 @@ public class BoardGUI extends Application {
     }
 
     public void setUpBoard() {
+        //System.out.println("setupcalled");
         for (int row=0; row<8; row++){
             for (int col=0; col<8; col++) {
                 if (row%2 != col%2) {
@@ -73,12 +75,21 @@ public class BoardGUI extends Application {
                 g.getColumnConstraints().add(colcon);
             }
         }
+        ObservableList<Node> children = g.getChildren();
+        //System.out.println("Setup: "+children.size());
     }
 
     public Circle makeCircle(Color c) {
         Circle  circle = new Circle(25);
         circle.setFill(c);
         return circle;
+    }
+
+    public void moveChecker(int[] x, int[] y) {
+        ObservableList<Node> children = g.getChildren();
+        System.out.println("Children: "+children.size());
+        //System.out.println(children.get(0));
+        //for (int i=0, i<3)
     }
 
 }
