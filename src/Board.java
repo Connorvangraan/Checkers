@@ -15,6 +15,7 @@ public class Board {
     int cpuColour;
     int whiteCheckers = 0;
     int blackCheckers = 0;
+    boolean verbose;
 
 
     public void setCurrentPlayer(int currentPlayer) {
@@ -40,8 +41,9 @@ public class Board {
         return cpuColour;
     }
 
-    public Board() {
+    public Board(boolean verbose) {
         //testsetup();
+        this.verbose = verbose;
         setup();
     }
 
@@ -52,18 +54,17 @@ public class Board {
      */
     public void setup() {
         b = new int[8][4];
-        System.out.println(b[0].length);
         for (int row = 0; row < b.length; row++) {
             for (int col = 0; col < b[row].length; col++) {
                 //System.out.println("row:" + row);
                 //System.out.println("col:" + col);
                 //System.out.println();
                 if (row < 3) {
-                    b[row][col] = black;
-                    blackCheckers++;
-                } else if (row > 4) {
                     b[row][col] = white;
                     whiteCheckers++;
+                } else if (row > 4) {
+                    b[row][col] = black;
+                    blackCheckers++;
                 } else {
                     b[row][col] = empty;
                 }
@@ -85,7 +86,6 @@ public class Board {
 
     public void testsetup() {
         b = new int[8][4];
-        System.out.println(b[0].length);
         for (int row = 0; row < b.length; row++) {
             for (int col = 0; col < b[row].length; col++) {
                 if (row == 2 && col == 1) {
@@ -261,7 +261,7 @@ public class Board {
             // for odd = -1 / 0
 
             if (x[0] % 2 == 0) {
-                System.out.println("beep");
+                //System.out.println("beep");
                 if (y[1] > x[1]) {
                     j = x[1] + 1;
                 } else {
@@ -274,11 +274,15 @@ public class Board {
                     j = x[1] - 1;
                 }
             }
-            System.out.println("Checker: " + (x[0] + (i / 2)) + (j));
+            if (verbose){
+                System.out.println("Checker: " + (x[0] + (i / 2)) + (j));
+            }
             // finds the space between and checks if there is an opposing checker there
             if (b[(x[0] + (1 / 2))][j] != black) {
-                System.out.println("Nothing to capture");
-                System.out.println(b[(x[0] + (i / 2))][j]);
+                if (verbose){
+                    System.out.println("Nothing to capture");
+                    System.out.println(b[(x[0] + (i / 2))][j]);
+                }
                 return false;
             }
 
@@ -301,19 +305,25 @@ public class Board {
                     j = x[1] - 1;
                 }
             }
+            if (verbose){
+                System.out.println("x: " + x[0] + x[1]);
+                System.out.println("y: " + y[0] + y[1]);
+                System.out.println("Checker: " + (x[0] + (i / 2)) + (x[1] + (j / 2)));
+                System.out.println(b[(x[0] + (i / 2))][j]);
+            }
 
-            System.out.println("x: " + x[0] + x[1]);
-            System.out.println("y: " + y[0] + y[1]);
-            System.out.println("Checker: " + (x[0] + (i / 2)) + (x[1] + (j / 2)));
-            System.out.println(b[(x[0] + (i / 2))][j]);
             if (b[(x[0] + (i / 2))][j] != white) {
-                System.out.println("Nothing to capture");
+                if (verbose){
+                    System.out.println("Nothing to capture");
+                }
                 return false;
             }
 
 
         } else {
-            System.out.println("No checker to move, or target space is empty ");
+            if (verbose){
+                System.out.println("No checker to move, or target space is empty ");
+            }
             return false;
         }
 
@@ -326,22 +336,29 @@ public class Board {
                 if (y[1] == x[1] + 1 || y[1] == x[1] - 1) {
                     return true;
                 } else {
-                    System.out.println("invalid column");
+                    if (verbose){
+                        System.out.println("invalid column");
+                    }
                 }
             } else {
-                System.out.println("invalid rows up");
+                if (verbose){
+                    System.out.println("invalid rows up");
+                }
             }
         } else {
             if (y[0] == x[0] + 2) {
                 if (y[1] == x[1] + 1 || y[1] == x[1] - 1) {
                     return true;
                 } else {
-                    System.out.println("invalid column");
+                    if (verbose){
+                        System.out.println("invalid column");
+                    }
                 }
             } else {
-                System.out.println("invalid rows down");
+                if (verbose){
+                    System.out.println("invalid rows down");
+                }
             }
-
         }
         return false;
     }
@@ -356,10 +373,14 @@ public class Board {
         if (b[y[0]][y[1]] == empty) {
             // checks if the checker is moving too far
             if (b[x[0]][x[1]] == white && y[0] != x[0] + 1) {
-                System.out.println("Too far to move");
+                if (verbose){
+                    System.out.println("Too far to move");
+                }
                 return false;
             } else if (b[x[0]][x[1]] == black && y[0] != x[0] - 1) {
-                System.out.println("Too far to move");
+                if (verbose){
+                    System.out.println("Too far to move");
+                }
                 return false;
             }
             // checks if the row of the checker is odd or even
@@ -370,7 +391,9 @@ public class Board {
                     if (y[1] == x[1] || y[1] == x[1] + 1) {
                         return true;
                     } else {
-                        System.out.println("Edge piece can't move here");
+                        if (verbose){
+                            System.out.println("Edge piece can't move here");
+                        }
                     }
                 }
                 // other end of the board
@@ -378,14 +401,18 @@ public class Board {
                     if (y[1] == x[1]) {
                         return true;
                     } else {
-                        System.out.println("Edge piece can't move here");
+                        if (verbose){
+                            System.out.println("Edge piece can't move here");
+                        }
                     }
                 }
                 // if in the middle, checks if checker is going to reachable tiles
                 else if (y[1] == x[1] || y[1] == x[1] + 1) {
                     return true;
                 } else {
-                    System.out.println("Does not line up");
+                    if (verbose){
+                        System.out.println("Does not line up");
+                    }
                     return false;
                 }
             } else {
@@ -401,17 +428,21 @@ public class Board {
                 } else if (y[1] == x[1] - 1 || y[1] == x[1]) {
                     return true;
                 } else {
-                    System.out.println();
-                    System.out.println("Does not line up. going up");
-                    System.out.println("y " + y[0] + y[1]);
-                    System.out.println("x " + x[0] + x[1]);
+                    if (verbose){
+                        System.out.println();
+                        System.out.println("Does not line up. going up");
+                        System.out.println("y " + y[0] + y[1]);
+                        System.out.println("x " + x[0] + x[1]);
+                    }
                     return false;
                 }
             }
 
 
         } else {
-            System.out.println("Target not empty");
+            if (verbose){
+                System.out.println("Target not empty");
+            }
             return false;
         }
         //System.out.println("Invalid move");
@@ -429,14 +460,19 @@ public class Board {
     public ArrayList<int[][]> findMoves() {
         // gets all possible moves for all a players checkers
         ArrayList<int[][]> moves = new ArrayList<>();
-        System.out.println("Current player: " + currentPlayer);
-        System.out.println("Black: " + black);
-        System.out.println("White: " + white);
+        if (verbose){
+            System.out.println("Current player: " + currentPlayer);
+            System.out.println("Black: " + black);
+            System.out.println("White: " + white);
+        }
+
         for (int row = 0; row < b.length; row++) {
             for (int col = 0; col < b[row].length; col++) {
                 int[] current = new int[]{row, col};
                 if (b[row][col] == currentPlayer) {
-                    System.out.println("Coord: " + b[row][col]);
+                    if (verbose){
+                        System.out.println("Coord: " + row + col);
+                    }
                     if (currentPlayer == white) {
                         if (row % 2 == 0) {
 
@@ -490,13 +526,12 @@ public class Board {
                         }
 
                     } else {
-                        System.out.println("boop");
+                        //System.out.println("boop");
                         // same for black counters
                         // checks for even row
                         if (row % 2 == 0) {
                             try {
                                 if (validMove(current, new int[]{row - 1, col})) {
-                                    System.out.println("adding 1");
                                     moves.add(new int[][]{current, new int[]{row - 1, col}});
                                 }
                             } catch (Exception e) {
@@ -504,7 +539,6 @@ public class Board {
                             }
                             try {
                                 if (validMove(current, new int[]{row - 1, col + 1})) {
-                                    System.out.println("adding 2");
                                     moves.add(new int[][]{current, new int[]{row - 1, col + 1}});
                                 }
                             } catch (Exception e) {
@@ -514,7 +548,6 @@ public class Board {
                         } else {
                             try {
                                 if (validMove(current, new int[]{row - 1, col})) {
-                                    System.out.println("adding 1");
                                     moves.add(new int[][]{current, new int[]{row - 1, col}});
                                 }
                             } finally {
@@ -522,7 +555,6 @@ public class Board {
                             }
                             try {
                                 if (validMove(current, new int[]{row - 1, col - 1})) {
-                                    System.out.println("adding 2");
                                     moves.add(new int[][]{current, new int[]{row - 1, col - 1}});
                                 }
                             } finally {
@@ -532,7 +564,6 @@ public class Board {
                         // checks for captures
                         try {
                             if (validCapture(current, new int[]{row - 2, col - 1})) {
-                                System.out.println("adding 3");
                                 moves.add(new int[][]{current, new int[]{row - 2, col - 1}});
                             }
                         } finally {
@@ -540,7 +571,6 @@ public class Board {
                         }
                         try {
                             if (validCapture(current, new int[]{row - 2, col + 1})) {
-                                System.out.println("adding 4");
                                 moves.add(new int[][]{current, new int[]{row - 2, col + 1}});
                             }
                         } finally {

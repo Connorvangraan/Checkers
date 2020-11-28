@@ -19,11 +19,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.Scanner;
 
 public class Game {
-    Board b = new Board();
+    boolean verbose = false;
+    Board b = new Board(verbose);
     String playerName;
     int human;
     int cpu;
     int player;
+
 
     public Game(String playerName) throws InterruptedException {
         System.out.println("Welcome "+playerName);
@@ -50,14 +52,17 @@ public class Game {
             b.setCurrentPlayer(cpu);
         }
 
-        System.out.println(checkVictory());
+        //System.out.println(checkVictory());
 
 
         while (running){
-            System.out.println("Running");
+            //System.out.println("Running");
             // black goes first. This is if the player is black
             if (b.getHumanColour() == b.black) {
-                getValidMoves();
+                System.out.println("Player takes first move");
+                TimeUnit.SECONDS.sleep(1);
+
+                getValidMoves(true);
                 int[][] move = getUserMove();
                 b.makeMove(move[0],move[1],human);
                 changePlayer();
@@ -67,7 +72,11 @@ public class Game {
                 if (running == true){
                     System.out.println("CPU Move");
                     move = getCPUmove();
-                    b.makeMove(move[0],move[1],cpu);
+                    if (move != null){
+                        b.makeMove(move[0],move[1],cpu);
+                        System.out.println("CPU did: "+move[0][0]+move[0][1]+" to "+move[1][0]+move[1][1]);
+                    }
+
                     running = !checkVictory();
                 }
             }
@@ -75,12 +84,17 @@ public class Game {
             else {
                 System.out.println("CPU Move");
                 int[][] move = getCPUmove();
-                b.makeMove(move[0],move[1],cpu);
+                if (move != null){
+                    b.makeMove(move[0],move[1],cpu);
+                    System.out.println("CPU did: "+move[0][0]+move[0][1]+" to "+move[1][0]+move[1][1]);
+                }
                 changePlayer();
                 TimeUnit.SECONDS.sleep(1);
                 running = !checkVictory();
 
                 if(running==true){
+                    TimeUnit.SECONDS.sleep(1);
+                    getValidMoves(true);
                     move = getUserMove();
                     b.makeMove(move[0],move[1],human);
                     running = !checkVictory();
@@ -96,37 +110,43 @@ public class Game {
     }
 
     public int[][] getCPUmove(){
-        System.out.println("getting move");
-        ArrayList<int[][]> moves = getValidMoves();
+        ArrayList<int[][]> moves = getValidMoves(false);
         int len = moves.size();
         if (len <= 0){
             return null;
         }
-        System.out.println("len "+len);
+        //System.out.println("len "+len);
         Random r = new Random();
-
         int choice = r.nextInt(len);
-        System.out.println(choice);
+        //System.out.println(choice);
         if(choice%2 == 1){
             choice -= 1;
         }
-        choice=1;
-        System.out.println("choice: "+choice);
+        //System.out.println("choice: "+choice);
         int[][] move = moves.get(choice);
+        /*
         System.out.println("move: "+move[0][0]);
         System.out.println("move: "+move[0][1]);
         System.out.println("move: "+move[1][0]);
-        System.out.println("move: "+move[1][1]);
+        System.out.println("move: "+move[1][1]);*/
         return move;
     }
 
-    public ArrayList<int[][]> getValidMoves() {
+    public ArrayList<int[][]> getValidMoves(boolean show) {
         ArrayList<int[][]> m = b.findMoves();
-        System.out.println("Move list:");
+        if (show){
+            System.out.println("Move list:");
+        }
+
+        String moveList = "";
+
+        // [row] [col = potential move] [0:1]=
+
         for (int row=0; row< m.size(); row++){
-            for (int col = 0; col< m.get(row).length; col++){
-                System.out.println(""+m.get(row)[col][0]+m.get(row)[col][1]);
-            }
+            moveList = moveList.concat(""+m.get(row)[0][0]+m.get(row)[0][1]+" "+m.get(row)[1][0]+m.get(row)[1][1] + "\n");
+        }
+        if (show){
+            System.out.println(moveList);
         }
         return m;
     }
@@ -190,7 +210,8 @@ public class Game {
         if(b.whiteVictory()){
             return true;
         }
-        if(getValidMoves().size() <= 0){
+        if(getValidMoves(false).size() <= 0){
+            System.out.println("all out of moves");
             return true;
         }
 
