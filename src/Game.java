@@ -22,7 +22,7 @@ public class Game {
     String playerName;
     int human;
     int cpu;
-    int player = human;
+    int player;
 
     public Game(String playerName) throws InterruptedException {
         System.out.println("Welcome "+playerName);
@@ -37,17 +37,33 @@ public class Game {
         System.out.println("Black: 2");
         int c = colour.nextInt();
         b.setColour(c);
+
         if(c%2 == 0){
             human=c;
             cpu=1;
-            b.setCurrentPlayer(cpu);
+            b.setCurrentPlayer(human);
         }
         else{
             human=1;
-            cpu=c;
-            b.setCurrentPlayer(human);
+            cpu=2;
+            b.setCurrentPlayer(cpu);
         }
 
+        System.out.println(checkVictory());
+
+        System.out.println("Displaying:");
+        getValidMoves();
+        System.out.println("Current player:"+b.currentPlayer);
+        changePlayer();
+        System.out.println("Current player:"+b.currentPlayer);
+        System.out.println("Displaying");
+        getValidMoves();
+
+
+
+
+
+        running = false;
         while (running){
             // black goes first. This is if the player is black
             if (b.getHumanColour() == b.black) {
@@ -59,7 +75,7 @@ public class Game {
 
                 System.out.println("CPU Move");
                 getValidMoves();
-                running = checkVictory();
+                running = !checkVictory();
             }
             // if the player is white
             else {
@@ -70,10 +86,11 @@ public class Game {
 
                 int[][] move = getUserMove();
                 b.makeMove(move[0],move[1],human);
-                running = checkVictory();
+                running = !checkVictory();
             }
             changePlayer();
         }
+        System.out.println("Game over");
         gameOver();
     }
 
@@ -85,7 +102,7 @@ public class Game {
         System.out.println("Move list:");
         for (int row=0; row< m.size(); row++){
             for (int col = 0; col< m.get(row).length; col++){
-                System.out.println("Moves: "+m.get(row)[col]);
+                System.out.println(""+m.get(row)[col][0]+m.get(row)[col][1]);
             }
         }
     }
@@ -132,11 +149,13 @@ public class Game {
     }
 
     public void changePlayer(){
-        if (player == human){
+        if (b.currentPlayer == human){
             player = cpu;
+            b.setCurrentPlayer(cpu);
         }
         else{
             player = human;
+            b.setCurrentPlayer(human);
         }
     }
 
