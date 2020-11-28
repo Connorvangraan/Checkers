@@ -5,13 +5,12 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 /**
  * TODO:
- *  Fix checkers moving up and going left (too far too move)
- *  white going down right doesn't capture
- *  black can move backwards (both ways) and it shouldnt
- *  black can move sideways
- *  black can't move left
- *  black capturing left doesn't remove checker (treats as move)
- *
+ *  Add king counters
+ *  Add king counter movement
+ *  Add heuristics
+ *  add minimax
+ *  add pruning
+ *  add ui
  *
  */
 
