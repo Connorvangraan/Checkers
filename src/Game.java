@@ -5,7 +5,6 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 /**
  * TODO:
- *  Add king counters
  *  Add king counter movement
  *  Add heuristics
  *  add minimax
@@ -18,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.Scanner;
 
 public class Game {
-    boolean verbose = true;
+    boolean verbose = false;
     Board b = new Board(verbose);
     String playerName;
     int human;

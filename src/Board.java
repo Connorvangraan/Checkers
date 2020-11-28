@@ -8,6 +8,8 @@ public class Board {
     static int empty = 8;
     static int white = 1;
     static int black = 2;
+    static int kingwhite = 3;
+    static int kingblack = 4;
     BoardGUI gui;
     int currentPlayer;
     int currentColour;
@@ -156,9 +158,22 @@ public class Board {
             System.out.println("Move");
             b[y[0]][y[1]] = b[x[0]][x[1]];
             b[x[0]][x[1]] = empty;
+            if (b[y[0]][y[1]] == black && y[0]==0){
+                b[y[0]][y[1]] = kingblack;
+            }
+            else if (b[y[0]][y[1]] == white && y[0]==7){
+                b[y[0]][y[1]] = kingwhite;
+            }
+
         } else if (validCapture(x, y)) {
             System.out.println("Capture");
             capture(x, y);
+            if (b[y[0]][y[1]] == black && y[0]==0){
+                b[y[0]][y[1]] = kingblack;
+            }
+            else if (b[y[0]][y[1]] == white && y[0]==7){
+                b[y[0]][y[1]] = kingwhite;
+            }
         }
         showBoard();
     }
