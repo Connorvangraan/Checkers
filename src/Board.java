@@ -42,9 +42,9 @@ public class Board {
     }
 
     public Board(boolean verbose) {
-        //testsetup();
         this.verbose = verbose;
-        setup();
+        //setup();
+        testsetup();
     }
 
     /**
@@ -89,6 +89,9 @@ public class Board {
         for (int row = 0; row < b.length; row++) {
             for (int col = 0; col < b[row].length; col++) {
                 if (row == 2 && col == 1) {
+                    b[row][col] = white;
+                    whiteCheckers++;
+                }else if (row == 2 && col == 2) {
                     b[row][col] = white;
                     whiteCheckers++;
                 } else if (row == 3 && col == 2) {
@@ -254,6 +257,7 @@ public class Board {
             return false;
         }
 
+        // this part works out of there is a checker to capture
         if (b[x[0]][x[1]] == white && b[y[0]][y[1]] == empty) {
             int i = y[0] - x[0];
             int j = 0;
@@ -278,7 +282,7 @@ public class Board {
                 System.out.println("Checker: " + (x[0] + (i / 2)) + (j));
             }
             // finds the space between and checks if there is an opposing checker there
-            if (b[(x[0] + (1 / 2))][j] != black) {
+            if (b[(x[0] + (i / 2))][j] != black) {
                 if (verbose){
                     System.out.println("Nothing to capture");
                     System.out.println(b[(x[0] + (i / 2))][j]);
@@ -286,7 +290,7 @@ public class Board {
                 return false;
             }
 
-
+        // trying to find checker to capture
         } else if (b[x[0]][x[1]] == black && b[y[0]][y[1]] == empty) {
             int i = y[0] - x[0];
             int j;

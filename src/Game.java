@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.Scanner;
 
 public class Game {
-    boolean verbose = false;
+    boolean verbose = true;
     Board b = new Board(verbose);
     String playerName;
     int human;
