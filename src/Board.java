@@ -41,7 +41,8 @@ public class Board {
     }
 
     public Board() {
-        testsetup();
+        //testsetup();
+        setup();
     }
 
     /**
@@ -76,8 +77,9 @@ public class Board {
             }
             System.out.println();
         }*/
-        new Thread(() -> Application.launch(BoardGUI.class)).start();
-        gui = new BoardGUI();
+
+        //new Thread(() -> Application.launch(BoardGUI.class)).start();
+        //gui = new BoardGUI();
         showBoard();
     }
 
@@ -109,8 +111,8 @@ public class Board {
             System.out.println();
         }*/
 
-        new Thread(() -> Application.launch(BoardGUI.class)).start();
-        gui = new BoardGUI();
+        //new Thread(() -> Application.launch(BoardGUI.class)).start();
+        //gui = new BoardGUI();
         showBoard();
     }
 
@@ -159,23 +161,45 @@ public class Board {
     }
 
     public void capture(int[] x, int[] y) {
-            /*
-            if (y[1] > x[1]){
-                b[y[0]][y[1]-1] = empty;
-            }
-            else { //if (x[1] > y[1])
-                b[y[0]][y[1]+1] = empty;
-            }*/
         b[y[0]][y[1]] = b[x[0]][x[1]];
         b[x[0]][x[1]] = empty;
-        int checkerc = (y[0] - x[0]) / 2;
-        int checkerr = (y[1] - x[1]) / 2;
-        System.out.println(checkerc);
-        System.out.println(checkerr);
-        b[x[0] + checkerc][x[1] + checkerr] = empty;
+
+        int[] c = getCaptured(x,y);
+        if (b[x[0]][x[1]] == white) {
+            b[c[0]][c[1]] = empty;
+            blackCheckers -= 1;
+        } else {
+            b[c[0]][c[1]] = empty;
+            whiteCheckers -= 1;
+        }
+
         // 2 1 taking 3 2 to 4 3
         // 2 1 taking 3 1 to 4 0
         // 3 2 taking 2 1 to 1 1
+    }
+
+    private int[] getCaptured(int[] x, int[] y) {
+        int i = (y[0] - x[0])/2;
+        int j = 0;
+        int[] coord;
+        // for even = 0 / 1
+        // for odd = -1 / 0
+
+        if (x[0] % 2 == 0) {
+            if (y[1] > x[1]) {
+                j = x[1] + 1;
+            } else {
+                j = x[1];
+            }
+        } else {
+            if (y[1] > x[1]) {
+                j = x[1];
+            } else {
+                j = x[1] - 1;
+            }
+        }
+        coord = new int[] {i+x[0],j};
+        return coord;
     }
 
     private boolean validCapture(int[] x, int[] y, int j) {
@@ -225,100 +249,96 @@ public class Board {
         return false;
     }
 
-    private boolean validCapture(int[] x, int[] y){
-        if (b[x[0]][x[1]] == white && b[y[0]][y[1]] == empty){
+    private boolean validCapture(int[] x, int[] y) {
+        if (y[0] < 0 || y[0] > 7 || y[1] < 0 || y[1] > 3) {
+            return false;
+        }
+
+        if (b[x[0]][x[1]] == white && b[y[0]][y[1]] == empty) {
             int i = y[0] - x[0];
             int j = 0;
             // for even = 0 / 1
             // for odd = -1 / 0
 
-            if (x[0]%2 == 0){
+            if (x[0] % 2 == 0) {
                 System.out.println("beep");
-                if (y[1] > x[1]){
-                    j = x[1]+1;
-                }
-                else{
+                if (y[1] > x[1]) {
+                    j = x[1] + 1;
+                } else {
                     j = x[1];
                 }
-            }
-            else{
-                if (y[1] > x[i]){
-                    j = x[i];
-                }
-                else{
+            } else {
+                if (y[1] > x[1]) {
+                    j = x[1];
+                } else {
                     j = x[1] - 1;
                 }
             }
-            System.out.println("Checker: "+ (x[0]+(i/2)) + (j));
+            System.out.println("Checker: " + (x[0] + (i / 2)) + (j));
             // finds the space between and checks if there is an opposing checker there
-            if (b[(x[0]+(i/2))][j] != black){
+            if (b[(x[0] + (1 / 2))][j] != black) {
                 System.out.println("Nothing to capture");
-                System.out.println(b[(x[0]+(i/2))][j]);
+                System.out.println(b[(x[0] + (i / 2))][j]);
                 return false;
             }
-        }
-        else if(b[x[0]][x[1]] == black && b[y[0]][y[1]] == empty){
+
+
+        } else if (b[x[0]][x[1]] == black && b[y[0]][y[1]] == empty) {
             int i = y[0] - x[0];
             int j;
-
-            if (x[0]%2 == 0){
-                System.out.println("beep");
-                if (y[1] > x[1]){
-                    j = x[1]+1;
-                }
-                else{
+            //checks if row is even or odd
+            if (x[0] % 2 == 0) {
+                // checks if going up or down
+                if (y[1] > x[1]) {
+                    j = x[1] + 1;
+                } else {
                     j = x[1];
                 }
-            }
-            else{
-                if (y[1] > x[1]){
+            } else {
+                if (y[1] > x[1]) {
                     j = x[1];
-                }
-                else{
+                } else {
                     j = x[1] - 1;
                 }
             }
 
-            System.out.println("x: "+x[0]+x[1]);
-            System.out.println("y: "+y[0]+y[1]);
-            System.out.println("Checker: "+ (x[0]+(i/2)) + (x[1]+(j/2)));
-            System.out.println(b[(x[0]+(i/2))][j]);
-            if (b[(x[0]+(i/2))][j] != white){
+            System.out.println("x: " + x[0] + x[1]);
+            System.out.println("y: " + y[0] + y[1]);
+            System.out.println("Checker: " + (x[0] + (i / 2)) + (x[1] + (j / 2)));
+            System.out.println(b[(x[0] + (i / 2))][j]);
+            if (b[(x[0] + (i / 2))][j] != white) {
                 System.out.println("Nothing to capture");
                 return false;
             }
-        }
-        else{
+
+
+        } else {
             System.out.println("No checker to move, or target space is empty ");
             return false;
         }
 
+
         // checks if the capture is going up or down
-        if (x[0] > y[0]){
+        if (x[0] > y[0]) {
             // checks the  amount of rows moved
-            if (y[0] == x[0]-2){
+            if (y[0] == x[0] - 2) {
                 // checks the columns are correct
-                if (y[1] == x[1]+1 || y[1] == x[1]-1){
+                if (y[1] == x[1] + 1 || y[1] == x[1] - 1) {
                     return true;
-                }
-                else{
+                } else {
                     System.out.println("invalid column");
                 }
-            }
-            else{
+            } else {
                 System.out.println("invalid rows up");
             }
-        }
-        else {
-            if (y[0] == x[0]+2){
-                if (y[1] == x[1]+1 || y[1] == x[1]-1){
+        } else {
+            if (y[0] == x[0] + 2) {
+                if (y[1] == x[1] + 1 || y[1] == x[1] - 1) {
                     return true;
-                }
-                else{
+                } else {
                     System.out.println("invalid column");
                 }
-            }
-            else{
+            } else {
                 System.out.println("invalid rows down");
             }
 
@@ -326,7 +346,12 @@ public class Board {
         return false;
     }
 
+
     public boolean validMove(int[] x, int[] y) {
+        if (y[0] < 0 || y[0] > 7 || y[1] < 0 || y[1] > 3) {
+            return false;
+        }
+
         // checks if where it is moving is free
         if (b[y[0]][y[1]] == empty) {
             // checks if the checker is moving too far
@@ -344,8 +369,7 @@ public class Board {
                     // checks if the checker is moving to a reachable tile
                     if (y[1] == x[1] || y[1] == x[1] + 1) {
                         return true;
-                    }
-                    else{
+                    } else {
                         System.out.println("Edge piece can't move here");
                     }
                 }
@@ -353,8 +377,7 @@ public class Board {
                 else if (x[1] == 3) {
                     if (y[1] == x[1]) {
                         return true;
-                    }
-                    else{
+                    } else {
                         System.out.println("Edge piece can't move here");
                     }
                 }
@@ -380,8 +403,8 @@ public class Board {
                 } else {
                     System.out.println();
                     System.out.println("Does not line up. going up");
-                    System.out.println("y "+y[0]+y[1]);
-                    System.out.println("x "+x[0]+x[1]);
+                    System.out.println("y " + y[0] + y[1]);
+                    System.out.println("x " + x[0] + x[1]);
                     return false;
                 }
             }
@@ -396,11 +419,11 @@ public class Board {
     }
 
     public boolean whiteVictory() {
-        return whiteCheckers == 0;
+        return blackCheckers == 0;
     }
 
     public boolean blackVictory() {
-        return blackCheckers == 0;
+        return whiteCheckers == 0;
     }
 
     public ArrayList<int[][]> findMoves() {
@@ -415,65 +438,112 @@ public class Board {
                 if (b[row][col] == currentPlayer) {
                     System.out.println("Coord: " + b[row][col]);
                     if (currentPlayer == white) {
-                        if (row%2 == 0){
+                        if (row % 2 == 0) {
+
                             // checks moves for even row
-                            if (validMove(current, new int[]{row + 1, col})) {
-                                moves.add(new int[][]{current, new int[]{row + 1, col}});
+                            try {
+                                if (validMove(current, new int[]{row + 1, col})) {
+                                    moves.add(new int[][]{current, new int[]{row + 1, col}});
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                            if (validMove(current, new int[]{row + 1, col + 1})) {
-                                moves.add(new int[][]{current, new int[]{row + 1, col + 1}});
+                            try {
+                                if (validMove(current, new int[]{row + 1, col + 1})) {
+                                    moves.add(new int[][]{current, new int[]{row + 1, col + 1}});
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        }
-                        else{
+                        } else {
                             // checks movements for odd
                             // can probably move this
-                            if (validMove(current, new int[]{row + 1, col})) {
-                                moves.add(new int[][]{current, new int[]{row + 1, col}});
+                            try {
+                                if (validMove(current, new int[]{row + 1, col})) {
+                                    moves.add(new int[][]{current, new int[]{row + 1, col}});
+                                }
+                            } finally {
+
                             }
-                            if (validMove(current, new int[]{row + 1, col - 1})) {
-                                moves.add(new int[][]{current, new int[]{row + 1, col - 1}});
+                            try {
+                                if (validMove(current, new int[]{row + 1, col - 1})) {
+                                    moves.add(new int[][]{current, new int[]{row + 1, col - 1}});
+                                }
+                            } finally {
+
                             }
                         }
                         // checks captures, this is not row dependent
-                        if (validCapture(current, new int[]{row + 2, col - 1})) {
-                            moves.add(new int[][]{current, new int[]{row + 2, col - 1}});
+                        try {
+                            if (validCapture(current, new int[]{row + 2, col - 1})) {
+                                moves.add(new int[][]{current, new int[]{row + 2, col - 1}});
+                            }
+                        } finally {
+
                         }
-                        if (validCapture(current, new int[]{row + 2, col + 1})) {
-                            moves.add(new int[][]{current, new int[]{row + 2, col + 1}});
+                        try {
+                            if (validCapture(current, new int[]{row + 2, col + 1})) {
+                                moves.add(new int[][]{current, new int[]{row + 2, col + 1}});
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
 
                     } else {
                         System.out.println("boop");
                         // same for black counters
                         // checks for even row
-                        if (row%2 == 0){
-                            if (validMove(current, new int[]{row - 1, col})) {
-                                System.out.println("adding 1");
-                                moves.add(new int[][]{current, new int[]{row - 1, col}});
+                        if (row % 2 == 0) {
+                            try {
+                                if (validMove(current, new int[]{row - 1, col})) {
+                                    System.out.println("adding 1");
+                                    moves.add(new int[][]{current, new int[]{row - 1, col}});
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                            if (validMove(current, new int[]{row - 1, col + 1})) {
-                                System.out.println("adding 2");
-                                moves.add(new int[][]{current, new int[]{row - 1, col + 1}});
+                            try {
+                                if (validMove(current, new int[]{row - 1, col + 1})) {
+                                    System.out.println("adding 2");
+                                    moves.add(new int[][]{current, new int[]{row - 1, col + 1}});
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        }
-                        else {
-                            if (validMove(current, new int[]{row - 1, col})) {
-                                System.out.println("adding 1");
-                                moves.add(new int[][]{current, new int[]{row - 1, col}});
+
+                        } else {
+                            try {
+                                if (validMove(current, new int[]{row - 1, col})) {
+                                    System.out.println("adding 1");
+                                    moves.add(new int[][]{current, new int[]{row - 1, col}});
+                                }
+                            } finally {
+
                             }
-                            if (validMove(current, new int[]{row - 1, col - 1})) {
-                                System.out.println("adding 2");
-                                moves.add(new int[][]{current, new int[]{row - 1, col - 1}});
+                            try {
+                                if (validMove(current, new int[]{row - 1, col - 1})) {
+                                    System.out.println("adding 2");
+                                    moves.add(new int[][]{current, new int[]{row - 1, col - 1}});
+                                }
+                            } finally {
+
                             }
                         }
                         // checks for captures
-                        if (validCapture(current, new int[]{row - 2, col - 1})) {
-                            System.out.println("adding 3");
-                            moves.add(new int[][]{current, new int[]{row - 2, col - 1}});
+                        try {
+                            if (validCapture(current, new int[]{row - 2, col - 1})) {
+                                System.out.println("adding 3");
+                                moves.add(new int[][]{current, new int[]{row - 2, col - 1}});
+                            }
+                        } finally {
+
                         }
-                        if (validCapture(current, new int[]{row - 2, col + 1})) {
-                            System.out.println("adding 4");
-                            moves.add(new int[][]{current, new int[]{row - 2, col + 1}});
+                        try {
+                            if (validCapture(current, new int[]{row - 2, col + 1})) {
+                                System.out.println("adding 4");
+                                moves.add(new int[][]{current, new int[]{row - 2, col + 1}});
+                            }
+                        } finally {
                         }
                     }
                 }
