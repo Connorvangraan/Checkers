@@ -1,22 +1,20 @@
 import javafx.application.Application;
-
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.Scanner;
+
 /**
  * TODO:
- *  Fix checkers moving up and going left (too far too move)
- *  white going down right doesn't capture
- *  black can move backwards (both ways) and it shouldnt
- *  black can move sideways
- *  black can't move left
- *  black capturing left doesn't remove checker (treats as move)
- *
+ * add king counters
+ * add movement for kings
+ * add heuristics
+ * add minimax
+ * add pruning
+ * add ui
  *
  */
 
-
-import java.util.Scanner;
 
 public class Game {
     boolean verbose = false;
