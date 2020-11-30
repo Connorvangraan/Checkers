@@ -21,6 +21,8 @@ public class Game {
     int human;
     int cpu;
     int player;
+    boolean getRandom = false;
+    int diffuculty = 100;
 
     static int capture = 2;
 
@@ -114,7 +116,16 @@ public class Game {
             if(choice%2 == 1){
                 choice -= 1;
             }
-            int[][] move = moves.get(choice);
+            int[][] move;
+            if(getRandom){
+                move = moves.get(choice);
+            }
+            else{
+                MiniMax m = new MiniMax(b,cpu);///, diffuculty
+                move = m.minimaxmove();
+            }
+            System.out.println("x: "+(move[0][0]+move[0][1]));
+            System.out.println("y: "+(move[1][0]+move[1][1]));
             int type = b.makeMove(move[0],move[1],cpu);
             System.out.println("CPU did: "+move[0][0]+move[0][1]+" to "+move[1][0]+move[1][1]);
             moves = getValidMoves(false);

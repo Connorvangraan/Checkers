@@ -22,9 +22,27 @@ public class Board {
 
     boolean captureOption = false;
 
+    public Board(boolean verbose) {
+        this.verbose = verbose;
+        setup();
+        //testsetup();
+    }
+
 
     public void setCurrentPlayer(int currentPlayer) {
         this.currentPlayer = currentPlayer;
+    }
+
+    public int getCurrentPlayer(){
+        return currentPlayer;
+    }
+
+    public int getWhiteCheckers() {
+        return whiteCheckers;
+    }
+
+    public int getBlackCheckers() {
+        return blackCheckers;
     }
 
     public void setColour(int human) {
@@ -46,11 +64,14 @@ public class Board {
         return cpuColour;
     }
 
-    public Board(boolean verbose) {
-        this.verbose = verbose;
-        //setup();
-        testsetup();
+    public int[][] getBoard(){
+        return b;
     }
+
+    public void setBoard(int[][] newb ){
+        b=newb;
+    }
+
 
     /**
      * Sets up the board
@@ -86,7 +107,7 @@ public class Board {
 
         //new Thread(() -> Application.launch(BoardGUI.class)).start();
         //gui = new BoardGUI();
-        showBoard();
+        //showBoard();
     }
 
     public void testsetup() {
@@ -179,7 +200,7 @@ public class Board {
             b[y[0]][y[1]] = kingwhite;
             System.out.println("White checker becomes king");
         }
-        showBoard();
+        //showBoard();
         return type;
     }
 
