@@ -22,6 +22,7 @@ public class Game {
     int cpu;
     int player;
 
+    static int capture = 2;
 
     public Game(String playerName) throws InterruptedException {
         System.out.println("Welcome "+playerName);
@@ -55,35 +56,23 @@ public class Game {
             //System.out.println("Running");
             // black goes first. This is if the player is black
             if (b.getHumanColour() == b.black) {
-                System.out.println("Player takes first move");
+                System.out.println("Player move");
                 TimeUnit.SECONDS.sleep(1);
-
-                getValidMoves(true);
-                int[][] move = getUserMove();
-                b.makeMove(move[0],move[1],human);
+                userMove();
                 changePlayer();
                 TimeUnit.SECONDS.sleep(1);
                 running = !checkVictory();
 
                 if (running == true){
                     System.out.println("CPU Move");
-                    move = getCPUmove();
-                    if (move != null){
-                        b.makeMove(move[0],move[1],cpu);
-                        System.out.println("CPU did: "+move[0][0]+move[0][1]+" to "+move[1][0]+move[1][1]);
-                    }
-
+                    cpumove();
                     running = !checkVictory();
                 }
             }
             // if the player is white
             else {
                 System.out.println("CPU Move");
-                int[][] move = getCPUmove();
-                if (move != null){
-                    b.makeMove(move[0],move[1],cpu);
-                    System.out.println("CPU did: "+move[0][0]+move[0][1]+" to "+move[1][0]+move[1][1]);
-                }
+                cpumove();
                 changePlayer();
                 TimeUnit.SECONDS.sleep(1);
                 running = !checkVictory();
@@ -91,8 +80,7 @@ public class Game {
                 if(running==true){
                     TimeUnit.SECONDS.sleep(1);
                     getValidMoves(true);
-                    move = getUserMove();
-                    b.makeMove(move[0],move[1],human);
+                    userMove();
                     running = !checkVictory();
                 }
             }
@@ -102,30 +90,53 @@ public class Game {
         gameOver();
     }
 
-    public void successor() {
+    public void userMove() {
+        getValidMoves(true);
+        int[][] move = getUserMove();
+        int type = b.makeMove(move[0],move[1],human);
+        getValidMoves(false);
+        while (type == capture && b.captureOption && !checkVictory()){
+            System.out.println("Another capture available");
+            getValidMoves(true);
+            move = getUserMove();
+            b.makeMove(move[0],move[1],human);
+            getValidMoves(false);
+        }
+        b.showBoard();
     }
 
-    public int[][] getCPUmove(){
+    public void cpumove(){
         ArrayList<int[][]> moves = getValidMoves(false);
         int len = moves.size();
-        if (len <= 0){
-            return null;
-        }
-        //System.out.println("len "+len);
-        Random r = new Random();
-        int choice = r.nextInt(len);
-        //System.out.println(choice);
-        if(choice%2 == 1){
-            choice -= 1;
-        }
-        //System.out.println("choice: "+choice);
-        int[][] move = moves.get(choice);
+        if (len > 0){
+            Random r = new Random();
+            int choice = r.nextInt(len);
+            if(choice%2 == 1){
+                choice -= 1;
+            }
+            int[][] move = moves.get(choice);
+            int type = b.makeMove(move[0],move[1],cpu);
+            System.out.println("CPU did: "+move[0][0]+move[0][1]+" to "+move[1][0]+move[1][1]);
+            moves = getValidMoves(false);
+
+            while (type == capture && b.captureOption && !checkVictory()){
+                System.out.println("Another capture available");
+                choice = r.nextInt(len);
+                if(choice%2 == 1){
+                    choice -= 1;
+                }
+                move = moves.get(choice);
+                b.makeMove(move[0],move[1],cpu);
+                System.out.println("CPU did: "+move[0][0]+move[0][1]+" to "+move[1][0]+move[1][1]);
+                moves = getValidMoves(false);
+            }
         /*
         System.out.println("move: "+move[0][0]);
         System.out.println("move: "+move[0][1]);
         System.out.println("move: "+move[1][0]);
         System.out.println("move: "+move[1][1]);*/
-        return move;
+        }
+        b.showBoard();
     }
 
     public ArrayList<int[][]> getValidMoves(boolean show) {
@@ -159,7 +170,7 @@ public class Game {
         while (gettingChoice) {
             String xs = myObj.nextLine();
             x = getDigits(xs);
-            if (b.b[x[0]][x[1]] == b.getHumanColour()){
+            if (b.b[x[0]][x[1]]%2 == b.getHumanColour()%2){
                 gettingChoice = false;
             }
         }
@@ -169,7 +180,7 @@ public class Game {
         while (gettingChoice) {
             String ys = myObj.nextLine();
             y = getDigits(ys);
-            if (b.b[x[0]][x[1]] == b.getHumanColour()){
+            if (b.b[x[0]][x[1]]%2 == b.getHumanColour()%2){
                 gettingChoice = false;
             }
         }
@@ -215,6 +226,8 @@ public class Game {
     }
 
     public void gameOver(){
+        System.out.println("black: "+b.blackCheckers);
+        System.out.println("white: "+b.whiteCheckers);
         if (b.whiteVictory()){
             System.out.println("White has won!");
         }
