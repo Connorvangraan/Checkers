@@ -94,7 +94,7 @@ public class Board {
                     b[row][col] = kingwhite;
                     whiteCheckers++;
                 } else if (row == 3 && col == 2) {
-                    b[row][col] = kingblack;
+                    b[row][col] = black;
                     blackCheckers++;
                 } else if (row == 3 && col == 1) {
                     b[row][col] = kingblack;
@@ -161,8 +161,10 @@ public class Board {
         }
         if (b[y[0]][y[1]] == black && y[0] == 0) {
             b[y[0]][y[1]] = kingblack;
+            System.out.println("Black checker becomes king");
         } else if (b[y[0]][y[1]] == white && y[0] == 7) {
             b[y[0]][y[1]] = kingwhite;
+            System.out.println("White checker becomes king");
         }
 
         showBoard();
@@ -214,8 +216,14 @@ public class Board {
         if (y[0] < 0 || y[0] > 7 || y[1] < 0 || y[1] > 3) {
             return false;
         }
+        System.out.println("checking capture: "+x[0]+x[1]);
+        System.out.println("of: "+y[0]+y[1]);
 
         if (b[x[0]][x[1]] == white && b[y[0]][y[1]] == empty) {
+            if (y[0] < x[0]){
+                return false;
+            }
+
             int i = y[0] - x[0];
             int j = 0;
             // for even = 0 / 1
@@ -239,7 +247,7 @@ public class Board {
                 System.out.println("Checker: " + (x[0] + (i / 2)) + (j));
             }
             // finds the space between and checks if there is an opposing checker there
-            if (b[(x[0] + (1 / 2))][j] != black) {
+            if (b[(x[0] + (i / 2))][j] != black && b[(x[0] + (i / 2))][j] != kingblack) {
                 if (verbose) {
                     System.out.println("Nothing to capture");
                     System.out.println(b[(x[0] + (i / 2))][j]);
@@ -249,6 +257,10 @@ public class Board {
 
 
         } else if (b[x[0]][x[1]] == black && b[y[0]][y[1]] == empty) {
+            if (y[0] > x[0]){
+                return false;
+            }
+
             int i = y[0] - x[0];
             int j;
             //checks if row is even or odd
@@ -273,7 +285,7 @@ public class Board {
                 System.out.println(b[(x[0] + (i / 2))][j]);
             }
 
-            if (b[(x[0] + (i / 2))][j] != white) {
+            if (b[(x[0] + (i / 2))][j] != white && b[(x[0] + (i / 2))][j] != kingwhite) {
                 if (verbose) {
                     System.out.println("Nothing to capture");
                 }
@@ -281,7 +293,51 @@ public class Board {
             }
 
 
-        } else {
+        }
+        else if ((b[x[0]][x[1]] == kingwhite || b[x[0]][x[1]] == kingblack) && b[y[0]][y[1]] == empty ){
+            int i = y[0] - x[0];
+            int j;
+            //checks if row is even or odd
+            if (x[0] % 2 == 0) {
+                // checks if going up or down
+                if (y[1] > x[1]) {
+                    j = x[1] + 1;
+                } else {
+                    j = x[1];
+                }
+            } else {
+                if (y[1] > x[1]) {
+                    j = x[1];
+                } else {
+                    j = x[1] - 1;
+                }
+            }
+            if (verbose) {
+                System.out.println("x: " + x[0] + x[1]);
+                System.out.println("y: " + y[0] + y[1]);
+                System.out.println("Checker: " + (x[0] + (i / 2)) + (x[1] + (j / 2)));
+                System.out.println(b[(x[0] + (i / 2))][j]);
+            }
+
+            if (b[x[0]][x[1]] == kingblack){
+                if (b[(x[0] + (i / 2))][j] != white && b[(x[0] + (i / 2))][j] != kingwhite) {
+                    if (verbose) {
+                        System.out.println("Nothing to capture: "+ b[(x[0] + (i / 2))][j]);
+                    }
+                    return false;
+                }
+            }
+            else if (b[x[0]][x[1]] == kingwhite){
+                if (b[(x[0] + (i / 2))][j] != black && b[(x[0] + (i / 2))][j] != kingblack) {
+                    if (verbose) {
+                        System.out.println("Nothing to capture");
+                    }
+                    return false;
+                }
+            }
+
+        }
+        else {
             if (verbose) {
                 System.out.println("No checker to move, or target space is empty ");
             }

@@ -6,8 +6,6 @@ import java.util.Scanner;
 
 /**
  * TODO:
- * add king counters
- * add movement for kings
  * add heuristics
  * add minimax
  * add pruning
