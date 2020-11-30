@@ -519,6 +519,7 @@ public class Board {
     }
 
     public ArrayList<int[][]> findMoves() {
+        captureOption=false;
         // gets all possible moves for all a players checkers
         ArrayList<int[][]> moves = new ArrayList<>();
         ArrayList<int[][]> captures = new ArrayList<>();

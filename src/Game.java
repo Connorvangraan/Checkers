@@ -52,7 +52,7 @@ public class Game {
         }
 
         //System.out.println(checkVictory());
-
+        b.showBoard();
 
         while (running){
             //System.out.println("Running");
@@ -121,8 +121,29 @@ public class Game {
                 move = moves.get(choice);
             }
             else{
-                MiniMax m = new MiniMax(b,cpu);///, diffuculty
+                int[][] tempboard = b.getBoard().clone();
+                for (int row=0; row < tempboard.length; row++){
+                    for (int col=0; col<tempboard[row].length; col++){
+                        System.out.println(""+tempboard[row][col]);
+                    }
+                }
+                int[][] tempboard2 = new int[8][4];
+                for (int row=0; row < tempboard.length; row++){
+                    for (int col=0; col<tempboard[row].length; col++){
+                        tempboard2[row][col]=Integer.valueOf(String.valueOf(tempboard[row][col]));
+                    }
+                }
+
+                MiniMax m = new MiniMax(tempboard2,cpu);///, diffuculty
                 move = m.minimaxmove();
+
+                for (int row=0; row < tempboard.length; row++){
+                    for (int col=0; col<tempboard[row].length; col++){
+                        System.out.println(""+tempboard[row][col]);
+                    }
+                }
+                //b.setBoard(tempboard);
+                System.out.println("lool");
             }
             System.out.println("x: "+(move[0][0]+move[0][1]));
             System.out.println("y: "+(move[1][0]+move[1][1]));
@@ -147,6 +168,7 @@ public class Game {
         System.out.println("move: "+move[1][0]);
         System.out.println("move: "+move[1][1]);*/
         }
+        System.out.println("hi");
         b.showBoard();
     }
 
@@ -239,6 +261,7 @@ public class Game {
     public void gameOver(){
         System.out.println("black: "+b.blackCheckers);
         System.out.println("white: "+b.whiteCheckers);
+        b.showBoard();
         if (b.whiteVictory()){
             System.out.println("White has won!");
         }
