@@ -184,21 +184,21 @@ public class Board {
     public int makeMove(int[] x, int[] y, int player) {
         int type = 0;
         if (validMove(x, y)) {
-            System.out.println("Move");
+            //System.out.println("Move");
             b[y[0]][y[1]] = b[x[0]][x[1]];
             b[x[0]][x[1]] = empty;
             type=1; // type 1 = move
         } else if (validCapture(x, y)) {
-            System.out.println("Capture");
+            //System.out.println("Capture");
             capture(x, y);
             type=2; // type 2 = capture
         }
         if (b[y[0]][y[1]] == black && y[0] == 0) {
             b[y[0]][y[1]] = kingblack;
-            System.out.println("Black checker becomes king");
+            //System.out.println("Black checker becomes king");
         } else if (b[y[0]][y[1]] == white && y[0] == 7) {
             b[y[0]][y[1]] = kingwhite;
-            System.out.println("White checker becomes king");
+            //System.out.println("White checker becomes king");
         }
         //showBoard();
         return type;

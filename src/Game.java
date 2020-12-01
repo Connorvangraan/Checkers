@@ -7,7 +7,6 @@ import java.util.Scanner;
 /**
  * TODO:
  * add heuristics
- * add minimax
  * add pruning
  * add ui
  *
@@ -81,7 +80,6 @@ public class Game {
 
                 if(running==true){
                     TimeUnit.SECONDS.sleep(1);
-                    getValidMoves(true);
                     userMove();
                     running = !checkVictory();
                 }
@@ -121,12 +119,8 @@ public class Game {
                 move = moves.get(choice);
             }
             else{
+                // annoyingly required to make a deep copy of int[][]
                 int[][] tempboard = b.getBoard().clone();
-                for (int row=0; row < tempboard.length; row++){
-                    for (int col=0; col<tempboard[row].length; col++){
-                        System.out.println(""+tempboard[row][col]);
-                    }
-                }
                 int[][] tempboard2 = new int[8][4];
                 for (int row=0; row < tempboard.length; row++){
                     for (int col=0; col<tempboard[row].length; col++){
@@ -136,14 +130,6 @@ public class Game {
 
                 MiniMax m = new MiniMax(tempboard2,cpu);///, diffuculty
                 move = m.minimaxmove();
-
-                for (int row=0; row < tempboard.length; row++){
-                    for (int col=0; col<tempboard[row].length; col++){
-                        System.out.println(""+tempboard[row][col]);
-                    }
-                }
-                //b.setBoard(tempboard);
-                System.out.println("lool");
             }
             System.out.println("x: "+(move[0][0]+move[0][1]));
             System.out.println("y: "+(move[1][0]+move[1][1]));

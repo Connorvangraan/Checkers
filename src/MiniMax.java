@@ -39,7 +39,14 @@ public class MiniMax {
 
     public Board cloneBoard(Board original) {
         Board clone = new Board(false);
-        clone.setBoard(original.getBoard().clone());
+        int[][] tempboard = original.getBoard().clone();
+        int[][] clonedboard = new int[8][4];
+        for (int row=0; row < tempboard.length; row++){
+            for (int col=0; col<tempboard[row].length; col++){
+                clonedboard[row][col]=Integer.valueOf(String.valueOf(tempboard[row][col]));
+            }
+        }
+        clone.setBoard(clonedboard);
         clone.setCurrentPlayer(original.getCurrentPlayer());
         clone.setColour(original.getHumanColour());
         return clone;
@@ -69,13 +76,6 @@ public class MiniMax {
 
         if (depth == 0 ) { //|| (board.findMoves().isEmpty())
             secount++;
-            if (depth==0){
-                System.out.println("Depth hit");
-            }
-            else{
-                System.out.println("out of moves");
-                board.showBoard();
-            }
             return getHeuristics(board);
         }
 
