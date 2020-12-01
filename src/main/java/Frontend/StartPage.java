@@ -1,3 +1,5 @@
+package main.java.Frontend;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 

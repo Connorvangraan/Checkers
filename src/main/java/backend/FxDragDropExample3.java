@@ -1,3 +1,5 @@
+package main.java.backend;
+
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;

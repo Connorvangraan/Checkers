@@ -1,7 +1,5 @@
-import javafx.application.Application;
+package main.java.backend;
 
-import java.lang.Object;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Board {
@@ -618,4 +616,3 @@ public class Board {
 
 
 }
-

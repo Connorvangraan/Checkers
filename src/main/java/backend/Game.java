@@ -1,4 +1,5 @@
-import javafx.application.Application;
+package main.java.backend;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -12,7 +13,6 @@ import java.util.Scanner;
  *
  */
 
-
 public class Game {
     boolean verbose = false;
     Board b = new Board(verbose);
@@ -20,16 +20,29 @@ public class Game {
     int human;
     int cpu;
     int player;
-    boolean getRandom = false;
-    int diffuculty = 6;
+    boolean getRandom = true;
+    int difficulty = 0;
 
     static int capture = 2;
 
     public Game(String playerName) throws InterruptedException {
-        System.out.println("Welcome "+playerName);
+        //System.out.println("Welcome "+playerName);
         this.playerName = playerName;
-        run();
+        //run();
     }
+
+    public boolean checkLegalMove(int[][] move){
+        return b.validMove(move[0],move[1]);
+    }
+
+    public boolean makeMove(int[][] move){
+        if (checkLegalMove(move)) {
+            b.makeMove(move[0], move[1], human);
+            return true;
+        }
+        return false;
+    }
+
 
     public void run() throws InterruptedException {
         boolean running = true;
@@ -90,18 +103,18 @@ public class Game {
         gameOver();
     }
 
-    public void setDiffuculty(){
+    public void setDificulty(){
         Scanner scan = new Scanner(System.in);
         boolean validchoice = false;
         while (!validchoice){
             int d = scan.nextInt();
             //if (d==0 || d == 2 || d == 4 || d == 6)
             if (d%2 == 0){
-                diffuculty = d;
+                difficulty = d;
                 validchoice = true;
             }
         }
-        if (diffuculty == 0){
+        if (difficulty == 0){
             getRandom=true;
         }
     }
@@ -144,7 +157,7 @@ public class Game {
                     }
                 }
 
-                MiniMax m = new MiniMax(tempboard2,diffuculty,cpu);///, diffuculty
+                MiniMax m = new MiniMax(tempboard2,difficulty,cpu);///, diffuculty
                 move = m.minimaxmove();
             }
             System.out.println("x: "+(move[0][0]+move[0][1]));
@@ -230,9 +243,7 @@ public class Game {
         return t;
     }
 
-    public boolean checkLegalMove(int[][] move){
-        return b.validMove(move[0],move[1]);
-    }
+
 
     public void changePlayer(){
         if (b.currentPlayer == human){

@@ -1,3 +1,5 @@
+package main.java.backend;
+
 import java.util.ArrayList;
 
 public class MiniMax {
@@ -11,7 +13,6 @@ public class MiniMax {
     int currentPlayer;
 
     static int secount, decount;
-    ArrayList<MoveAndScores> successorEvaluations;
 
     int[][] bestMove;
 
@@ -109,7 +110,7 @@ public class MiniMax {
         ArrayList<int[][]> moves = board.findMoves();
         //System.out.println("Player " + board.getCurrentPlayer());
         //for (int[][] move : moves) {
-         //   System.out.println("Move: " + move[0][0] + move[0][1] + " to " + move[1][0] + move[1][1]);
+        //   System.out.println("Move: " + move[0][0] + move[0][1] + " to " + move[1][0] + move[1][1]);
         //}
 
         for (int[][] move : moves) {
