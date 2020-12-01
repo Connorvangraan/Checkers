@@ -21,7 +21,7 @@ public class Game {
     int cpu;
     int player;
     boolean getRandom = false;
-    int diffuculty = 100;
+    int diffuculty = 6;
 
     static int capture = 2;
 
@@ -90,6 +90,22 @@ public class Game {
         gameOver();
     }
 
+    public void setDiffuculty(){
+        Scanner scan = new Scanner(System.in);
+        boolean validchoice = false;
+        while (!validchoice){
+            int d = scan.nextInt();
+            //if (d==0 || d == 2 || d == 4 || d == 6)
+            if (d%2 == 0){
+                diffuculty = d;
+                validchoice = true;
+            }
+        }
+        if (diffuculty == 0){
+            getRandom=true;
+        }
+    }
+
     public void userMove() {
         getValidMoves(true);
         int[][] move = getUserMove();
@@ -124,11 +140,11 @@ public class Game {
                 int[][] tempboard2 = new int[8][4];
                 for (int row=0; row < tempboard.length; row++){
                     for (int col=0; col<tempboard[row].length; col++){
-                        tempboard2[row][col]=Integer.valueOf(String.valueOf(tempboard[row][col]));
+                        tempboard2[row][col]=tempboard[row][col];//Integer.valueOf(String.valueOf(tempboard[row][col]));
                     }
                 }
 
-                MiniMax m = new MiniMax(tempboard2,cpu);///, diffuculty
+                MiniMax m = new MiniMax(tempboard2,diffuculty,cpu);///, diffuculty
                 move = m.minimaxmove();
             }
             System.out.println("x: "+(move[0][0]+move[0][1]));
@@ -154,7 +170,7 @@ public class Game {
         System.out.println("move: "+move[1][0]);
         System.out.println("move: "+move[1][1]);*/
         }
-        System.out.println("hi");
+        //System.out.println("hi");
         b.showBoard();
     }
 

@@ -13,12 +13,13 @@ public class MiniMax {
     static int secount, decount;
     ArrayList<MoveAndScores> successorEvaluations;
 
-    boolean verbose = false;
 
     int[][] bestMove;
 
+    int difficulty;
 
-    public MiniMax(int[][] board, int maximisingPlayer) {
+
+    public MiniMax(int[][] board, int maximisingPlayer, int difficulty) {
         int[][] newboard = new int[8][4];
         for (int row=0; row < board.length; row++){
             for (int col=0; col<board[row].length; col++){
@@ -27,6 +28,7 @@ public class MiniMax {
         }
         b = new Board(false);
         b.setBoard(board);
+        this.difficulty = difficulty;
         this.maximisingPlayer = maximisingPlayer;
         currentPlayer = maximisingPlayer;
         b.setCurrentPlayer(maximisingPlayer);
@@ -47,13 +49,15 @@ public class MiniMax {
             }
         }
         clone.setBoard(clonedboard);
-        clone.setCurrentPlayer(original.getCurrentPlayer());
-        clone.setColour(original.getHumanColour());
+        String player = String.valueOf(original.getCurrentPlayer());
+        clone.setCurrentPlayer(Integer.valueOf(player));
+        String colour = String.valueOf(original.getHumanColour());
+        clone.setColour(Integer.valueOf(colour));
         return clone;
     }
 
     public int[][] minimaxmove() {
-        minimax(b, 9, maximisingPlayer); //, -1, 1
+        minimax(b, difficulty, maximisingPlayer); //, -1, 1
         System.out.println("Static evals: " + secount);
         System.out.println("Dyanmic evals: " + decount);
         return bestMove;
@@ -144,31 +148,6 @@ public class MiniMax {
         return bestscore;
     }
 
-
-    public int[][] aiMove() {
-        successorEvaluations = new ArrayList<MoveAndScores>();
-        secount = 0;
-        decount = 0;
-
-        maximisingPlayer = b.cpuColour;
-        //minimax(0);
-        b.setCurrentPlayer(b.cpuColour);
-        return bestMove();
-    }
-
-    public int[][] bestMove() {
-        int max = Integer.MIN_VALUE;
-        int best = 0;
-
-        for (int i = 0; i < successorEvaluations.size(); i++) {
-            // checks if there is a value that is higher than max
-            if (max < successorEvaluations.get(i).score) {
-                max = successorEvaluations.get(i).score;
-                best = i;
-            }
-        }
-        return successorEvaluations.get(best).move;
-    }
 
     public double getHeuristics(Board board) {
         double h;

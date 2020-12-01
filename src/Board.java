@@ -133,8 +133,8 @@ public class Board {
                 }
             }
         }
-        System.out.println("white at start: "+whiteCheckers);
-        System.out.println("black at start: "+blackCheckers);
+        //System.out.println("white at start: "+whiteCheckers);
+        //System.out.println("black at start: "+blackCheckers);
 
         /*
         for (int i = 0; i < b.length; i++) {
@@ -146,7 +146,7 @@ public class Board {
 
         //new Thread(() -> Application.launch(BoardGUI.class)).start();
         //gui = new BoardGUI();
-        showBoard();
+        //showBoard();
     }
 
     public void showBoard() {
