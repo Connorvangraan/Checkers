@@ -13,11 +13,11 @@ public class MiniMax {
     static int secount, decount;
     ArrayList<MoveAndScores> successorEvaluations;
 
-
     int[][] bestMove;
 
     int difficulty;
 
+    static int kingwhite = 3, kingblack = 4;
 
     public MiniMax(int[][] board, int maximisingPlayer, int difficulty) {
         int[][] newboard = new int[8][4];
@@ -86,22 +86,22 @@ public class MiniMax {
 
         if (maximisingPlayer == black && board.whiteVictory()) {
             secount++;
-            System.out.print(": black checkers eliminated - I would lose.");
+            //System.out.print(": black checkers eliminated - I would lose.");
             return getHeuristics(board);
         }
         if (maximisingPlayer == black && board.blackVictory()) {
             secount++;
-            System.out.print(": white checkers eliminated - I would win.");
+            //System.out.print(": white checkers eliminated - I would win.");
             return getHeuristics(board);
         }
         if (maximisingPlayer == white && board.blackVictory()) {
             secount++;
-            System.out.print(": white checkers eliminated - I would lose.");
+            //System.out.print(": white checkers eliminated - I would lose.");
             return getHeuristics(board);
         }
         if (maximisingPlayer == white && board.whiteVictory()) {
             secount++;
-            System.out.print(": black checkers eliminated - I would win.");
+            //System.out.print(": black checkers eliminated - I would win.");
             return getHeuristics(board);
         }
 
@@ -137,19 +137,13 @@ public class MiniMax {
                     bestscore = currentscore;
                 }
             }
-            /*
-            if (depth == 0){
-                successorEvaluations.add(new MoveAndScores(bestscore, move));
-            }*/
-
-
 
         }
         return bestscore;
     }
 
 
-    public double getHeuristics(Board board) {
+    public double getHeuristics(Board board, boolean used) {
         double h;
         if (board.currentPlayer == white) {
             return board.getWhiteCheckers() - board.getBlackCheckers();
@@ -158,6 +152,33 @@ public class MiniMax {
             return board.getBlackCheckers() - board.getWhiteCheckers();
         }
 
+    }
+
+    public double getHeuristics(Board board){
+        double h;
+        if (board.currentPlayer == white) {
+            int checkerdiff = board.getWhiteCheckers() - board.getBlackCheckers();
+            int kings = 0;
+            for (int row=0; row<board.getBoard().length; row++){
+                for (int col=0; col<board.getBoard()[row].length; col++){
+                    if (board.getBoard()[row][col] == kingwhite){
+                        kings++;
+                    }
+                }
+            }
+            return checkerdiff+(kings*1.2);
+        } else { //board.currentPlayer == black
+            int checkerdiff = board.getBlackCheckers() - board.getWhiteCheckers();
+            int kings = 0;
+            for (int row=0; row<board.getBoard().length; row++){
+                for (int col=0; col<board.getBoard()[row].length; col++){
+                    if (board.getBoard()[row][col] == kingblack){
+                        kings++;
+                    }
+                }
+            }
+            return checkerdiff+(kings*1.2);
+        }
     }
 
 }
