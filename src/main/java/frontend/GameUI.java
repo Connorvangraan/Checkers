@@ -1,4 +1,4 @@
-package main.java.Frontend;
+package main.java.frontend;
 
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -29,6 +29,7 @@ public class GameUI extends Application {
                     t = new Tile(true, row, col, tilesize);
                     if (row < 3){
                         c = makeNewChecker(1,row,col);
+
                         //System.out.println(""+row+col);
                     }
                     else if (row > 4){
@@ -64,18 +65,7 @@ public class GameUI extends Application {
                 coordx = (getCoord(targetx))/2;
             }
 
-            System.out.println();
-            System.out.println("Source: "+ checker.getCoords()[0]+" "+checker.getCoords()[1]);
-            System.out.println("Target: "+coordy+" "+coordx);
-
             moveChecker(checker,new int[] {coordy, coordx});
-            /*
-            if (checker.getCoords()[0]%2 && ){
-
-            }
-            else{
-                checker.move(checker.getOrigins()[0]/tilesize, checker.getOrigins()[1]/tilesize);
-            }*/
 
         });
         return checker;
@@ -88,15 +78,41 @@ public class GameUI extends Application {
         int oldCoordy = c.getCoords()[0];
         int oldCoordx = c.getCoords()[1];
         int[] origin = new int[] {oldCoordy, oldCoordx};
-        if (game.makeMove(new int[][] {origin, newCoords})){
+        int[][] move = new int[][] {origin, newCoords};
+        if (game.checkLegalMove(move)){
             System.out.println("Moving");
+            game.makeMove(move);
             c.move(newCoords[0],newCoords[1]);
+            b[c.getUIcoords()[0]][c.getUIcoords()[1]].occupy(c);
+            b[origin[0]][origin[1]].occupy(null);
+
+
+        } else if(game.checkLegalCapture(move)){
+            System.out.println("Capturing");
+            int[] captured = game.makeCapture(move);
+            System.out.println("Captured: "+captured[0]+" "+captured[1]);
+            removeChecker(captured);
+            c.move(newCoords[0],newCoords[1]);
+            b[c.getUIcoords()[0]][c.getUIcoords()[1]].occupy(c);
         }
         else{
+            System.out.println("No move");
             c.cancelMove();
         }
+        c.kingCheck();
+    }
 
-
+    public void removeChecker(int[] captured){
+        int col;
+        if (captured[0]%2 == 0){
+            col = (captured[1]*2)+1;
+        }
+        else{
+            col= captured[1]*2;
+        }
+        System.out.println("Checker to remove: "+captured[0]+col);
+        Checker removed = b[captured[0]][col].getChecker();
+        checkers.getChildren().remove(removed);
     }
 
     private int getCoord(double x){

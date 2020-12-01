@@ -10,11 +10,10 @@ import java.util.Scanner;
  * add heuristics
  * add pruning
  * add ui
- *
  */
 
 public class Game {
-    boolean verbose = false;
+    boolean verbose = true;
     Board b = new Board(verbose);
     String playerName;
     int human;
@@ -31,16 +30,24 @@ public class Game {
         //run();
     }
 
-    public boolean checkLegalMove(int[][] move){
-        return b.validMove(move[0],move[1]);
+    public boolean checkLegalMove(int[][] move) {
+        return b.validMove(move[0], move[1]);
     }
 
-    public boolean makeMove(int[][] move){
-        if (checkLegalMove(move)) {
-            b.makeMove(move[0], move[1], human);
-            return true;
-        }
-        return false;
+    public boolean checkLegalCapture(int[][] move) {
+        return b.validCapture(move[0], move[1]);
+    }
+
+    public boolean makeMove(int[][] move) {
+        b.makeMove(move[0], move[1], human);
+        b.showBoard();
+        return true;
+    }
+
+    public int[] makeCapture(int[][] move) {
+        int[] c = b.capture(move[0],move[1]);
+        b.showBoard();
+        return c;
     }
 
 
@@ -52,21 +59,20 @@ public class Game {
         int c = colour.nextInt();
         b.setColour(c);
 
-        if(c%2 == 0){
-            human=c;
-            cpu=1;
+        if (c % 2 == 0) {
+            human = c;
+            cpu = 1;
             b.setCurrentPlayer(human);
-        }
-        else{
-            human=1;
-            cpu=2;
+        } else {
+            human = 1;
+            cpu = 2;
             b.setCurrentPlayer(cpu);
         }
 
         //System.out.println(checkVictory());
         b.showBoard();
 
-        while (running){
+        while (running) {
             //System.out.println("Running");
             // black goes first. This is if the player is black
             if (b.getHumanColour() == b.black) {
@@ -77,7 +83,7 @@ public class Game {
                 TimeUnit.SECONDS.sleep(1);
                 running = !checkVictory();
 
-                if (running == true){
+                if (running == true) {
                     System.out.println("CPU Move");
                     cpumove();
                     running = !checkVictory();
@@ -91,7 +97,7 @@ public class Game {
                 TimeUnit.SECONDS.sleep(1);
                 running = !checkVictory();
 
-                if(running==true){
+                if (running == true) {
                     TimeUnit.SECONDS.sleep(1);
                     userMove();
                     running = !checkVictory();
@@ -103,78 +109,77 @@ public class Game {
         gameOver();
     }
 
-    public void setDificulty(){
+    public void setDificulty() {
         Scanner scan = new Scanner(System.in);
         boolean validchoice = false;
-        while (!validchoice){
+        while (!validchoice) {
             int d = scan.nextInt();
             //if (d==0 || d == 2 || d == 4 || d == 6)
-            if (d%2 == 0){
+            if (d % 2 == 0) {
                 difficulty = d;
                 validchoice = true;
             }
         }
-        if (difficulty == 0){
-            getRandom=true;
+        if (difficulty == 0) {
+            getRandom = true;
         }
     }
 
     public void userMove() {
         getValidMoves(true);
         int[][] move = getUserMove();
-        int type = b.makeMove(move[0],move[1],human);
+        int type = b.makeMove(move[0], move[1], human);
         getValidMoves(false);
-        while (type == capture && b.captureOption && !checkVictory()){
+        while (type == capture && b.captureOption && !checkVictory()) {
             System.out.println("Another capture available");
             getValidMoves(true);
             move = getUserMove();
-            b.makeMove(move[0],move[1],human);
+            b.makeMove(move[0], move[1], human);
             getValidMoves(false);
         }
         b.showBoard();
     }
 
-    public void cpumove(){
+    public void cpumove() {
         ArrayList<int[][]> moves = getValidMoves(false);
         int len = moves.size();
-        if (len > 0){
+        if (len > 0) {
             Random r = new Random();
             int choice = r.nextInt(len);
-            if(choice%2 == 1){
+            if (choice % 2 == 1) {
                 choice -= 1;
             }
             int[][] move;
-            if(getRandom){
+            if (getRandom) {
                 move = moves.get(choice);
-            }
-            else{
+            } else {
                 // annoyingly required to make a deep copy of int[][]
                 int[][] tempboard = b.getBoard().clone();
                 int[][] tempboard2 = new int[8][4];
-                for (int row=0; row < tempboard.length; row++){
-                    for (int col=0; col<tempboard[row].length; col++){
-                        tempboard2[row][col]=tempboard[row][col];//Integer.valueOf(String.valueOf(tempboard[row][col]));
+                for (int row = 0; row < tempboard.length; row++) {
+                    for (int col = 0; col < tempboard[row].length; col++) {
+                        tempboard2[row][col] = tempboard[row][col];//Integer.valueOf(String.valueOf(tempboard[row][col]));
                     }
                 }
 
-                MiniMax m = new MiniMax(tempboard2,difficulty,cpu);///, diffuculty
+                MiniMax m = new MiniMax(tempboard2, difficulty, cpu);///, diffuculty
                 move = m.minimaxmove();
             }
-            System.out.println("x: "+(move[0][0]+move[0][1]));
-            System.out.println("y: "+(move[1][0]+move[1][1]));
-            int type = b.makeMove(move[0],move[1],cpu);
-            System.out.println("CPU did: "+move[0][0]+move[0][1]+" to "+move[1][0]+move[1][1]);
+            System.out.println("x: " + (move[0][0] + move[0][1]));
+            System.out.println("y: " + (move[1][0] + move[1][1]));
+            int type = b.makeMove(move[0], move[1], cpu);
+            System.out.println("CPU did: " + move[0][0] + move[0][1] + " to " + move[1][0] + move[1][1]);
             moves = getValidMoves(false);
 
-            while (type == capture && b.captureOption && !checkVictory()){
+            while (type == capture && b.captureOption && !checkVictory()) {
                 System.out.println("Another capture available");
                 choice = r.nextInt(len);
-                if(choice%2 == 1){
+                if (choice % 2 == 1) {
                     choice -= 1;
                 }
                 move = moves.get(choice);
-                b.makeMove(move[0],move[1],cpu);
-                System.out.println("CPU did: "+move[0][0]+move[0][1]+" to "+move[1][0]+move[1][1]);
+                b.makeMove(move[0], move[1], cpu);
+                System.out.println("CPU did: " + move[0][0] + move[0][1] + " to " + move[1][0] + move[1][1]);
                 moves = getValidMoves(false);
             }
         /*
@@ -189,7 +194,7 @@ public class Game {
 
     public ArrayList<int[][]> getValidMoves(boolean show) {
         ArrayList<int[][]> m = b.findMoves();
-        if (show){
+        if (show) {
             System.out.println("Move list:");
         }
 
@@ -197,16 +202,16 @@ public class Game {
 
         // [row] [col = potential move] [0:1]=
 
-        for (int row=0; row< m.size(); row++){
-            moveList = moveList.concat(""+m.get(row)[0][0]+m.get(row)[0][1]+" "+m.get(row)[1][0]+m.get(row)[1][1] + "\n");
+        for (int row = 0; row < m.size(); row++) {
+            moveList = moveList.concat("" + m.get(row)[0][0] + m.get(row)[0][1] + " " + m.get(row)[1][0] + m.get(row)[1][1] + "\n");
         }
-        if (show){
+        if (show) {
             System.out.println(moveList);
         }
         return m;
     }
 
-    public int[][] getUserMove(){
+    public int[][] getUserMove() {
         Scanner myObj = new Scanner(System.in);
         System.out.println("Enter move");
         System.out.println("Checker: a b");
@@ -218,7 +223,7 @@ public class Game {
         while (gettingChoice) {
             String xs = myObj.nextLine();
             x = getDigits(xs);
-            if (b.b[x[0]][x[1]]%2 == b.getHumanColour()%2){
+            if (b.b[x[0]][x[1]] % 2 == b.getHumanColour() % 2) {
                 gettingChoice = false;
             }
         }
@@ -228,42 +233,40 @@ public class Game {
         while (gettingChoice) {
             String ys = myObj.nextLine();
             y = getDigits(ys);
-            if (b.b[x[0]][x[1]]%2 == b.getHumanColour()%2){
+            if (b.b[x[0]][x[1]] % 2 == b.getHumanColour() % 2) {
                 gettingChoice = false;
             }
         }
 
-        int[][] xy = {x,y};
+        int[][] xy = {x, y};
         return xy;
     }
 
-    public int[] getDigits(String s){
+    public int[] getDigits(String s) {
         String[] n = s.split(" ");
-        int [] t = new int[] {Integer.valueOf(n[0]), Integer.valueOf(n[1])};
+        int[] t = new int[]{Integer.valueOf(n[0]), Integer.valueOf(n[1])};
         return t;
     }
 
 
-
-    public void changePlayer(){
-        if (b.currentPlayer == human){
+    public void changePlayer() {
+        if (b.currentPlayer == human) {
             player = cpu;
             b.setCurrentPlayer(cpu);
-        }
-        else{
+        } else {
             player = human;
             b.setCurrentPlayer(human);
         }
     }
 
-    public boolean checkVictory(){
-        if(b.blackVictory()){
+    public boolean checkVictory() {
+        if (b.blackVictory()) {
             return true;
         }
-        if(b.whiteVictory()){
+        if (b.whiteVictory()) {
             return true;
         }
-        if(getValidMoves(false).size() <= 0){
+        if (getValidMoves(false).size() <= 0) {
             System.out.println("all out of moves");
             return true;
         }
@@ -271,14 +274,13 @@ public class Game {
         return false;
     }
 
-    public void gameOver(){
-        System.out.println("black: "+b.blackCheckers);
-        System.out.println("white: "+b.whiteCheckers);
+    public void gameOver() {
+        System.out.println("black: " + b.blackCheckers);
+        System.out.println("white: " + b.whiteCheckers);
         b.showBoard();
-        if (b.whiteVictory()){
+        if (b.whiteVictory()) {
             System.out.println("White has won!");
-        }
-        else if(b.blackVictory()) {
+        } else if (b.blackVictory()) {
             System.out.println("Black has won!");
         }
     }

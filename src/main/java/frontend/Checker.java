@@ -1,15 +1,14 @@
-package main.java.Frontend;
+package main.java.frontend;
 
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-import static main.java.testingboard.GameUI.TILE_SIZE;
-
 
 public class Checker extends StackPane {
     int type, row, col, size;
     double mx, my, originx, originy;
+    boolean king = false;
 
     public Checker(int t, int row, int col, int size){ // 1 = white , 2 = black
         type = t;
@@ -76,7 +75,7 @@ public class Checker extends StackPane {
         else{
             x = x*2;
         }
-        System.out.println("Coords: "+row+" "+x);
+        //System.out.println("Coords: "+row+" "+x);
 
         originx = (x*size) + ((size/3)/2);
         originy = (row*size) + ((size/3)/2);
@@ -95,6 +94,32 @@ public class Checker extends StackPane {
     public int[] getCoords(){
         return new int[] {row,col};
     }
+    public int[] getUIcoords(){
+        if (row%2 == 0){
+            return new int[] {row, (col*2)+1};
+        }
+        else{
+            return new int[] {row, col*2};
+        }
+    }
 
+    public void kingCheck(){
+        if (type == 1 && row == 7){
+            king=true;
+            System.out.println("Congrats white checker, you are king");
 
+        }
+        else if (type == 2 && row == 0){
+            king=true;
+            System.out.println("Congrats black checker, you are king");
+        }
+    }
+
+    public boolean isKing() {
+        return king;
+    }
+
+    public void setKing(boolean king) {
+        this.king = king;
+    }
 }

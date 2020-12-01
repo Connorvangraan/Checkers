@@ -1,4 +1,4 @@
-package main.java.Frontend;
+package main.java.frontend;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -39,5 +39,8 @@ public class Tile extends Rectangle {
         }
     }
 
+    public Checker getChecker(){
+        return checker;
+    }
 
 }

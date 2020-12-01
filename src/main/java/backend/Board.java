@@ -202,7 +202,7 @@ public class Board {
         return type;
     }
 
-    public void capture(int[] x, int[] y) {
+    public int[] capture(int[] x, int[] y) {
         b[y[0]][y[1]] = b[x[0]][x[1]];
         b[x[0]][x[1]] = empty;
 
@@ -214,6 +214,7 @@ public class Board {
             b[c[0]][c[1]] = empty;
             whiteCheckers -= 1;
         }
+        return c;
 
         // 2 1 taking 3 2 to 4 3
         // 2 1 taking 3 1 to 4 0
@@ -245,7 +246,7 @@ public class Board {
         return coord;
     }
 
-    private boolean validCapture(int[] x, int[] y) {
+    public boolean validCapture(int[] x, int[] y) {
         if (y[0] < 0 || y[0] > 7 || y[1] < 0 || y[1] > 3) {
             return false;
         }
@@ -414,7 +415,13 @@ public class Board {
     }
 
     public boolean validMove(int[] x, int[] y) {
+        if (verbose){
+            System.out.println("Checking: "+x[0]+x[1]+" "+y[0]+y[1]);
+        }
         if (y[0] < 0 || y[0] > 7 || y[1] < 0 || y[1] > 3) {
+            if (verbose){
+                System.out.println("Going off board");
+            }
             return false;
         }
 
@@ -481,12 +488,12 @@ public class Board {
                         return true;
                     }
                 } else if (x[1] == 3) {
-                    if (y[1] == x[1] || y[1] == x[1] + 1) {
+                    if (y[1] == x[1] || y[1] == x[1] - 1) {
                         return true;
                     }
-                } else if (y[1] == x[1] - 1 || y[1] == x[1]) {
-                    return true;
-                } else {
+                }else if (y[1] == x[1] - 1 || y[1] == x[1]) {
+                    return true;                }
+                else {
                     if (verbose) {
                         System.out.println();
                         System.out.println("Does not line up. going up");
