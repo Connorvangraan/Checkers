@@ -204,19 +204,13 @@ public class Game {
         gameOver();
     }
 
-    public void setDificulty() {
-        Scanner scan = new Scanner(System.in);
-        boolean validchoice = false;
-        while (!validchoice) {
-            int d = scan.nextInt();
-            //if (d==0 || d == 2 || d == 4 || d == 6)
-            if (d % 2 == 0) {
-                difficulty = d;
-                validchoice = true;
-            }
-        }
-        if (difficulty == 0) {
+    public void setDifficulty(int x) {
+        if (x == 0) {
             getRandom = true;
+        }
+        else{
+            getRandom = false;
+            difficulty=x;
         }
     }
 
@@ -257,7 +251,7 @@ public class Game {
                     }
                 }
 
-                MiniMax m = new MiniMax(tempboard2, difficulty, cpu);///, diffuculty
+                MiniMax m = new MiniMax(tempboard2, difficulty, cpu);///, difficulty
                 move = m.minimaxmove();
             }
             System.out.println("x: " + (move[0][0] + move[0][1]));

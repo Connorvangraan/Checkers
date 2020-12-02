@@ -130,32 +130,39 @@ public class GameUI extends Application {
         int oldCoordx = c.getCoords()[1];
         int[] origin = new int[]{oldCoordy, oldCoordx};
         System.out.println("##: "+origin[0]+origin[1]);
+        System.out.println("##: "+newCoords[0]+newCoords[1]);
         int[][] move = new int[][]{origin, newCoords};
         if (game.checkLegalMove(move)) {
             System.out.println("Moving");
             game.makeMove(move);
             c.move(newCoords[0], newCoords[1]);
             b[c.getUIcoords()[0]][c.getUIcoords()[1]].occupy(c);
+            System.out.println("after move: "+c.getUIcoords()[0]+c.getUIcoords()[1]+b[c.getUIcoords()[0]][c.getUIcoords()[1]].occupied());
             b[origin[0]][game.convertCoord(origin)[1]].occupy(null);
+            System.out.println("left behind: "+origin[0]+origin[1]+b[origin[0]][game.convertCoord(origin)[1]].occupied());
             if (!game.checkVictory()) {
                 cpuMove();
             }
             if(game.checkVictory()){
                 endScreen();
             }
-            // ### put end game here
-
         } else if (game.checkLegalCapture(move)) {
             System.out.println("Capturing");
             int[] captured = game.makeCapture(move);
             System.out.println("Captured: " + captured[0] + " " + captured[1]);
             c.move(newCoords[0], newCoords[1]);
-            removeChecker(captured);
+            System.out.println("Checker is now at: "+c.getUIcoords()[0]+c.getCoords()[1]);
+            boolean kingcaptured = removeChecker(captured);
+            if (kingcaptured){
+                c.setKing(true);
+            }
             b[c.getUIcoords()[0]][c.getUIcoords()[1]].occupy(c);
-            b[origin[0]][origin[1]].occupy(null);
+            System.out.println("moved to: "+c.getUIcoords()[0]+c.getUIcoords()[1]+b[c.getUIcoords()[0]][c.getUIcoords()[1]].occupied());
+            b[origin[0]][game.convertCoord(origin)[1]].occupy(null);
+            System.out.println("moved from: "+origin[0]+origin[1]+b[origin[0]][origin[1]].occupied());
             game.getValidMoves(false);
 
-            if (!game.checkVictory() && !game.possibleCaptures()) {
+            if (!game.checkVictory() && (!game.possibleCaptures() || kingcaptured)) {
                 cpuMove();
             }
             if(game.checkVictory()){
@@ -186,9 +193,13 @@ public class GameUI extends Application {
                 }
                 c.move(move[1][0], move[1][1]);
                 b[game.convertCoord(move[1])[0]][game.convertCoord(move[1])[1]].occupy(c);
+                System.out.println("checker at: "+game.convertCoord(move[1])[0]+game.convertCoord(move[1])[1]+b[game.convertCoord(move[1])[0]][game.convertCoord(move[1])[1]].occupied());
                 b[game.convertCoord(move[0])[0]][game.convertCoord(move[0])[1]].occupy(null);
                 System.out.println("Captured: " + captured[0] + " " + captured[1]);
-                removeChecker(captured);
+                boolean kingcapture = removeChecker(captured);
+                if (kingcapture){
+                    c.setKing(true);
+                }
                 c.kingCheck();
                 game.getValidMoves(false);
                 //if (game.checkVictory()) ## end game
@@ -212,7 +223,7 @@ public class GameUI extends Application {
                 int col = move[1][1];
                 System.out.println(""+row+col);
                 c.move(row, col);
-                b[c.getUIcoords()[0]][c.getUIcoords()[1]].occupy(c);
+                b[c.getUIcoords()[0]][game.convertCoord(move[1])[1]].occupy(c);
                 b[move[0][0]][game.convertCoord(move[0])[1]].occupy(null);
                 c.kingCheck();
             }
@@ -225,7 +236,7 @@ public class GameUI extends Application {
 
     }
 
-    public void removeChecker(int[] captured) {
+    public boolean removeChecker(int[] captured) {
         int col;
         if (captured[0] % 2 == 0) {
             col = (captured[1] * 2) + 1;
@@ -234,7 +245,10 @@ public class GameUI extends Application {
         }
         System.out.println("Checker to remove: " + captured[0] + col);
         Checker removed = b[captured[0]][col].getChecker();
+        System.out.println("Deleting: "+captured[0] + col+ b[captured[0]][col].occupied());
+        boolean k = removed.isKing();
         checkers.getChildren().remove(removed);
+        return k;
     }
 
     private int getCoord(double x) {
@@ -309,12 +323,14 @@ public class GameUI extends Application {
         startb.setOnAction(e -> {
             if (player != 0) {
                 String diff = (String) diffbox.getValue();
+                System.out.println(diff);
                 if (diff.equals("Easy")) {
                     difficulty = 0;
+                    System.out.println(difficulty);
                 } else if (diff.equals("Medium")) {
-                    difficulty = 2;
+                    difficulty = 1;
                 } else if (diff.equals("Hard")) {
-                    difficulty = 4;
+                    difficulty = 2;
                 } else if (diff.equals("Very Hard")) {
                     difficulty = 6;
                 }
@@ -345,12 +361,15 @@ public class GameUI extends Application {
         gameStage.setScene(scene);
         gameStage.show();
         game = new Game(name);
+        game.setDifficulty(difficulty);
 
         if (player == 1) {
             game.setCurrentPlayer(cpu);
+            game.setPlayer(1);
             cpuMove();
         } else {
             game.setCurrentPlayer(player);
+            game.setPlayer(2);
         }
     }
 
@@ -393,7 +412,7 @@ public class GameUI extends Application {
     @Override
     public void start(Stage primaryStage) throws InterruptedException {
         startScreen(primaryStage);
-        name = "Connor";
+        //name = "Connor";
     }
 
     public static void main(String[] args) {

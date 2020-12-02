@@ -1,5 +1,7 @@
 package main.java.backend;
 
+import main.java.backend.Board;
+
 import java.util.ArrayList;
 
 public class MiniMax {
@@ -22,14 +24,15 @@ public class MiniMax {
 
     public MiniMax(int[][] board, int maximisingPlayer, int difficulty) {
         int[][] newboard = new int[8][4];
-        for (int row=0; row < board.length; row++){
-            for (int col=0; col<board[row].length; col++){
-                newboard[row][col]=Integer.valueOf(String.valueOf(board[row][col]));
+        for (int row = 0; row < board.length; row++) {
+            for (int col = 0; col < board[row].length; col++) {
+                newboard[row][col] = Integer.valueOf(String.valueOf(board[row][col]));
             }
         }
         b = new Board(false);
         b.setBoard(board);
         this.difficulty = difficulty;
+
         this.maximisingPlayer = maximisingPlayer;
         currentPlayer = maximisingPlayer;
         b.setCurrentPlayer(maximisingPlayer);
@@ -44,9 +47,9 @@ public class MiniMax {
         Board clone = new Board(false);
         int[][] tempboard = original.getBoard().clone();
         int[][] clonedboard = new int[8][4];
-        for (int row=0; row < tempboard.length; row++){
-            for (int col=0; col<tempboard[row].length; col++){
-                clonedboard[row][col]=Integer.valueOf(String.valueOf(tempboard[row][col]));
+        for (int row = 0; row < tempboard.length; row++) {
+            for (int col = 0; col < tempboard[row].length; col++) {
+                clonedboard[row][col] = Integer.valueOf(String.valueOf(tempboard[row][col]));
             }
         }
         clone.setBoard(clonedboard);
@@ -66,6 +69,8 @@ public class MiniMax {
 
     // should be private
     public double minimax(Board board, int depth, int currentPlayer) { //, int alpha, int beta
+        //System.out.println("minimising: "+minimisingPlayer);
+        //System.out.println("maximising: "+maximisingPlayer);
         board.setCurrentPlayer(currentPlayer);
         //System.out.println("Player " + board.getCurrentPlayer());
         double bestscore = -1;
@@ -79,39 +84,14 @@ public class MiniMax {
             bestscore = 1;
         }
 
-        if (depth == 0 ) { //|| (board.findMoves().isEmpty())
+        if (depth == 0 || board.blackVictory() || board.whiteVictory()) { //|| (board.findMoves().isEmpty())
             secount++;
-            return getHeuristics(board);
+            return getHeuristics(board,currentPlayer);
         }
 
-
-        if (maximisingPlayer == black && board.whiteVictory()) {
-            secount++;
-            //System.out.print(": black checkers eliminated - I would lose.");
-            return getHeuristics(board);
-        }
-        if (maximisingPlayer == black && board.blackVictory()) {
-            secount++;
-            //System.out.print(": white checkers eliminated - I would win.");
-            return getHeuristics(board);
-        }
-        if (maximisingPlayer == white && board.blackVictory()) {
-            secount++;
-            //System.out.print(": white checkers eliminated - I would lose.");
-            return getHeuristics(board);
-        }
-        if (maximisingPlayer == white && board.whiteVictory()) {
-            secount++;
-            //System.out.print(": black checkers eliminated - I would win.");
-            return getHeuristics(board);
-        }
-
-        //System.out.println("here");
         ArrayList<int[][]> moves = board.findMoves();
-        //System.out.println("Player " + board.getCurrentPlayer());
-        //for (int[][] move : moves) {
-        //   System.out.println("Move: " + move[0][0] + move[0][1] + " to " + move[1][0] + move[1][1]);
-        //}
+
+        int[][] tempmove = null;
 
         for (int[][] move : moves) {
             double currentscore;
@@ -122,10 +102,21 @@ public class MiniMax {
                 // do move on clone board here
                 Board clone = cloneBoard(board);
                 clone.makeMove(move[0], move[1], maximisingPlayer); //put move here);
+               /*
+               if (move[1][0] == move[0][0]+2 || move[1][0] == move[0][0]-2) {
+                   board.findMoves();
+                   if (board.captureOption) {
+                       currentscore = minimax(clone, depth - 1, maximisingPlayer);
+                       if (bestscore < currentscore) {
+                           tempmove = move;
+                           bestscore = currentscore;
+                       }
+                   }
+               }*/
                 currentscore = minimax(clone, depth - 1, minimisingPlayer);
                 //bestscore = Math.max(bestscore, currentscore);
                 if (bestscore < currentscore) {
-                    bestMove = move;
+                    tempmove = move;
                     bestscore = currentscore;
                 }
             } else {
@@ -134,52 +125,54 @@ public class MiniMax {
                 clone.makeMove(move[0], move[1], minimisingPlayer);//put move here);
                 currentscore = minimax(clone, depth - 1, maximisingPlayer);
                 //bestscore = Math.min(bestscore, currentscore);
-                if (bestscore > currentscore){
+                if (bestscore > currentscore) {
                     bestscore = currentscore;
+                    tempmove = move;
                 }
             }
-
         }
+        bestMove = tempmove;
         return bestscore;
     }
 
 
-    public double getHeuristics(Board board, boolean used) {
+    public double getHeuristics(Board board,int player) {
         double h;
-        if (board.currentPlayer == white) {
-            return board.getWhiteCheckers() - board.getBlackCheckers();
-        } else { //board.currentPlayer == black
-            System.out.println(board.getBlackCheckers() - board.getWhiteCheckers());
-            return board.getBlackCheckers() - board.getWhiteCheckers();
+        int whitekings = 0;
+        int blackkings = 0;
+        int whitecheckers = 0;
+        int blackcheckers = 0;
+
+        for (int row = 0; row < board.getBoard().length; row++) {
+            for (int col = 0; col < board.getBoard()[row].length; col++) {
+                if (board.getBoard()[row][col] == kingwhite) {
+                    whitekings++;
+                }
+                if (board.getBoard()[row][col] == kingblack) {
+                    blackkings++;
+                }
+                if (board.getBoard()[row][col] == white){
+                    whitecheckers++;
+                }
+                if (board.getBoard()[row][col] == black){
+                    blackcheckers++;
+                }
+            }
         }
+        int diffblackwhite = blackcheckers - whitecheckers;
+        int diffwhiteblack = whitecheckers - blackcheckers;
 
-    }
-
-    public double getHeuristics(Board board){
-        double h;
-        if (board.currentPlayer == white) {
+        if (maximisingPlayer == white) {
+            System.out.println(maximisingPlayer);
             int checkerdiff = board.getWhiteCheckers() - board.getBlackCheckers();
-            int kings = 0;
-            for (int row=0; row<board.getBoard().length; row++){
-                for (int col=0; col<board.getBoard()[row].length; col++){
-                    if (board.getBoard()[row][col] == kingwhite){
-                        kings++;
-                    }
-                }
-            }
-            return checkerdiff+(kings*1.2);
-        } else { //board.currentPlayer == black
+            return diffwhiteblack + (whitekings*1.5);// - board.getBlackCheckers() ;//+ (whitekings * 1.2)
+        } else {
             int checkerdiff = board.getBlackCheckers() - board.getWhiteCheckers();
-            int kings = 0;
-            for (int row=0; row<board.getBoard().length; row++){
-                for (int col=0; col<board.getBoard()[row].length; col++){
-                    if (board.getBoard()[row][col] == kingblack){
-                        kings++;
-                    }
-                }
-            }
-            return checkerdiff+(kings*1.2);
+            return diffblackwhite + (blackkings*1.5);// - board.getWhiteCheckers() ;//+ (blackkings  * 1.2)
         }
-    }
 
+    }
 }
+
+
+

@@ -209,12 +209,20 @@ public class Board {
         b[x[0]][x[1]] = empty;
 
         int[] c = getCaptured(x, y);
+        if (b[c[0]][c[1]] == kingwhite){
+            b[y[0]][y[1]] = kingblack;
+            whiteCheckers--;
+        }
+        else if(b[c[0]][c[1]] == kingblack){
+            b[y[0]][y[1]] = kingwhite;
+            blackCheckers--;
+        }
         if (b[y[0]][y[1]] == white || b[y[0]][y[1]] == kingwhite) {
             b[c[0]][c[1]] = empty;
-            blackCheckers -= 1;
+            blackCheckers --;
         } else {
             b[c[0]][c[1]] = empty;
-            whiteCheckers -= 1;
+            whiteCheckers --;
         }
 
         if (b[y[0]][y[1]] == white && y[0] == 7) {
@@ -525,10 +533,13 @@ public class Board {
         if (blackCheckers == 0) {
             return true;
         }
+        int temp = currentPlayer;
         currentPlayer = black;
         if (findMoves().size() == 0) {
+            currentPlayer = temp;
             return true;
         }
+        currentPlayer=temp;
         return false;
     }
 
@@ -536,10 +547,16 @@ public class Board {
         if (whiteCheckers == 0) {
             return true;
         }
+        int temp = currentPlayer;
+        //System.out.println(temp);
         currentPlayer = white;
+        //System.out.println(temp);
         if (findMoves().size() == 0) {
+            currentPlayer=temp;
+            //System.out.println(currentPlayer);
             return true;
         }
+        currentPlayer=temp;
         return false;
     }
 

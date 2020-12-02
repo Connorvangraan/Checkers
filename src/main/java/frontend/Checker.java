@@ -145,5 +145,6 @@ public class Checker extends StackPane {
 
     public void setKing(boolean king) {
         this.king = king;
+        makeKing();
     }
 }
