@@ -109,6 +109,7 @@ public class Game {
     }
 
     public boolean checkVictory() {
+        int temp = b.getCurrentPlayer();
         if (b.blackVictory()) {
             System.out.println("Black has won!");
             return true;
@@ -121,17 +122,22 @@ public class Game {
             System.out.println("all out of moves");
             return true;
         }
+        b.setCurrentPlayer(temp);
         return false;
     }
 
     public int getVictor(){
+        int temp = b.getCurrentPlayer();
         if (b.blackVictory()) {
             return 2;
         }
         if (b.whiteVictory()) {
             return 1;
         }
-        else return 0;
+        else {
+            b.setCurrentPlayer(temp);
+            return 0;
+        }
     }
 
     public boolean possibleCaptures(){

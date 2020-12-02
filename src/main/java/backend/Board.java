@@ -31,7 +31,7 @@ public class Board {
         this.currentPlayer = currentPlayer;
     }
 
-    public int getCurrentPlayer(){
+    public int getCurrentPlayer() {
         return currentPlayer;
     }
 
@@ -62,15 +62,15 @@ public class Board {
         return cpuColour;
     }
 
-    public int[][] getBoard(){
+    public int[][] getBoard() {
         return b;
     }
 
-    public void setBoard(int[][] newb ){
-        b=newb;
+    public void setBoard(int[][] newb) {
+        b = newb;
     }
 
-    public boolean possibleCaptures(){
+    public boolean possibleCaptures() {
         return captureOption;
     }
 
@@ -119,12 +119,10 @@ public class Board {
                 if (row == 3 && col == 2) {
                     b[row][col] = kingwhite;
                     whiteCheckers++;
-                }
-                else if (row == 5 && col == 1){
+                } else if (row == 5 && col == 1) {
                     b[row][col] = kingwhite;
                     whiteCheckers++;
-                }
-                else if (row == 7 && col == 2) {
+                } else if (row == 7 && col == 2) {
                     b[row][col] = black;
                     blackCheckers++;
                 } else if (row == 6 && col == 0) {
@@ -189,11 +187,11 @@ public class Board {
             //System.out.println("Move");
             b[y[0]][y[1]] = b[x[0]][x[1]];
             b[x[0]][x[1]] = empty;
-            type=1; // type 1 = move
+            type = 1; // type 1 = move
         } else if (validCapture(x, y)) {
             //System.out.println("Capture");
             capture(x, y);
-            type=2; // type 2 = capture
+            type = 2; // type 2 = capture
         }
         if (b[y[0]][y[1]] == black && y[0] == 0) {
             b[y[0]][y[1]] = kingblack;
@@ -219,10 +217,9 @@ public class Board {
             whiteCheckers -= 1;
         }
 
-        if (b[y[0]][y[1]] == white && y[0] == 7){
+        if (b[y[0]][y[1]] == white && y[0] == 7) {
             b[y[0]][y[1]] = kingwhite;
-        }
-        else if (b[y[0]][y[1]] == black && y[0] == 0){
+        } else if (b[y[0]][y[1]] == black && y[0] == 0) {
             b[y[0]][y[1]] = kingblack;
         }
 
@@ -266,7 +263,7 @@ public class Board {
         //System.out.println("of: "+y[0]+y[1]);
 
         if (b[x[0]][x[1]] == white && b[y[0]][y[1]] == empty) {
-            if (y[0] < x[0]){
+            if (y[0] < x[0]) {
                 return false;
             }
 
@@ -303,7 +300,7 @@ public class Board {
 
 
         } else if (b[x[0]][x[1]] == black && b[y[0]][y[1]] == empty) {
-            if (y[0] > x[0]){
+            if (y[0] > x[0]) {
                 return false;
             }
 
@@ -339,8 +336,7 @@ public class Board {
             }
 
 
-        }
-        else if ((b[x[0]][x[1]] == kingwhite || b[x[0]][x[1]] == kingblack) && b[y[0]][y[1]] == empty ){
+        } else if ((b[x[0]][x[1]] == kingwhite || b[x[0]][x[1]] == kingblack) && b[y[0]][y[1]] == empty) {
             int i = y[0] - x[0];
             int j;
             //checks if row is even or odd
@@ -365,15 +361,14 @@ public class Board {
                 System.out.println(b[(x[0] + (i / 2))][j]);
             }
 
-            if (b[x[0]][x[1]] == kingblack){
+            if (b[x[0]][x[1]] == kingblack) {
                 if (b[(x[0] + (i / 2))][j] != white && b[(x[0] + (i / 2))][j] != kingwhite) {
                     if (verbose) {
-                        System.out.println("Nothing to capture: "+ b[(x[0] + (i / 2))][j]);
+                        System.out.println("Nothing to capture: " + b[(x[0] + (i / 2))][j]);
                     }
                     return false;
                 }
-            }
-            else if (b[x[0]][x[1]] == kingwhite){
+            } else if (b[x[0]][x[1]] == kingwhite) {
                 if (b[(x[0] + (i / 2))][j] != black && b[(x[0] + (i / 2))][j] != kingblack) {
                     if (verbose) {
                         System.out.println("Nothing to capture");
@@ -382,8 +377,7 @@ public class Board {
                 }
             }
 
-        }
-        else {
+        } else {
             if (verbose) {
                 System.out.println("No checker to move, or target space is empty ");
             }
@@ -427,11 +421,11 @@ public class Board {
     }
 
     public boolean validMove(int[] x, int[] y) {
-        if (verbose){
-            System.out.println("Checking: "+x[0]+x[1]+" "+y[0]+y[1]);
+        if (verbose) {
+            System.out.println("Checking: " + x[0] + x[1] + " " + y[0] + y[1]);
         }
         if (y[0] < 0 || y[0] > 7 || y[1] < 0 || y[1] > 3) {
-            if (verbose){
+            if (verbose) {
                 System.out.println("Going off board");
             }
             return false;
@@ -503,9 +497,9 @@ public class Board {
                     if (y[1] == x[1] || y[1] == x[1] - 1) {
                         return true;
                     }
-                }else if (y[1] == x[1] - 1 || y[1] == x[1]) {
-                    return true;                }
-                else {
+                } else if (y[1] == x[1] - 1 || y[1] == x[1]) {
+                    return true;
+                } else {
                     if (verbose) {
                         System.out.println();
                         System.out.println("Does not line up. going up");
@@ -528,15 +522,29 @@ public class Board {
     }
 
     public boolean whiteVictory() {
-        return blackCheckers == 0;
+        if (blackCheckers == 0) {
+            return true;
+        }
+        currentPlayer = black;
+        if (findMoves().size() == 0) {
+            return true;
+        }
+        return false;
     }
 
     public boolean blackVictory() {
-        return whiteCheckers == 0;
+        if (whiteCheckers == 0) {
+            return true;
+        }
+        currentPlayer = white;
+        if (findMoves().size() == 0) {
+            return true;
+        }
+        return false;
     }
 
     public ArrayList<int[][]> findMoves() {
-        captureOption=false;
+        captureOption = false;
         // gets all possible moves for all a players checkers
         ArrayList<int[][]> moves = new ArrayList<>();
         ArrayList<int[][]> captures = new ArrayList<>();
@@ -623,12 +631,11 @@ public class Board {
 
         //System.out.println("Moves: "+moves.size());
         //System.out.println("Captures: "+captures.size());
-        if (captures.size() > 0){
-            captureOption=true;
+        if (captures.size() > 0) {
+            captureOption = true;
             return captures;
-        }
-        else{
-            captureOption=false;
+        } else {
+            captureOption = false;
             return moves;
         }
     }

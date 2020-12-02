@@ -2,23 +2,23 @@ package main.java.frontend;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import main.java.backend.*;
+import main.java.backend.Game;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class GameUI extends Application {
@@ -129,13 +129,14 @@ public class GameUI extends Application {
         int oldCoordy = c.getCoords()[0];
         int oldCoordx = c.getCoords()[1];
         int[] origin = new int[]{oldCoordy, oldCoordx};
+        System.out.println("##: "+origin[0]+origin[1]);
         int[][] move = new int[][]{origin, newCoords};
         if (game.checkLegalMove(move)) {
             System.out.println("Moving");
             game.makeMove(move);
             c.move(newCoords[0], newCoords[1]);
             b[c.getUIcoords()[0]][c.getUIcoords()[1]].occupy(c);
-            b[origin[0]][origin[1]].occupy(null);
+            b[origin[0]][game.convertCoord(origin)[1]].occupy(null);
             if (!game.checkVictory()) {
                 cpuMove();
             }
@@ -211,7 +212,7 @@ public class GameUI extends Application {
                 int col = move[1][1];
                 System.out.println(""+row+col);
                 c.move(row, col);
-                b[move[1][0]][game.convertCoord(move[1])[1]].occupy(c);
+                b[c.getUIcoords()[0]][c.getUIcoords()[1]].occupy(c);
                 b[move[0][0]][game.convertCoord(move[0])[1]].occupy(null);
                 c.kingCheck();
             }
