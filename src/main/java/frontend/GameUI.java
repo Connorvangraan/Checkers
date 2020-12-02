@@ -8,12 +8,18 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import main.java.backend.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Random;
+
 public class GameUI extends Application {
     public static int width=8, height=8, tilesize=80;
     Tile[][] b = new Tile[width][height];
     Group tiles = new Group();
     Group checkers = new Group();
     Game game;
+    int player;
+    int cpu;
 
 
     private Parent createBoard() {
@@ -29,7 +35,6 @@ public class GameUI extends Application {
                     t = new Tile(true, row, col, tilesize);
                     if (row < 3){
                         c = makeNewChecker(1,row,col);
-
                         //System.out.println(""+row+col);
                     }
                     else if (row > 4){
@@ -54,19 +59,21 @@ public class GameUI extends Application {
     public Checker makeNewChecker(int type, int row, int col){
         Checker checker = new Checker(type, row, col,tilesize);
         checker.setOnMouseReleased(e -> {
-            double targetx = checker.getLayoutX(); //toBoard(checker.getLayoutX());
-            double targety = checker.getLayoutY(); //toBoard(checker.getLayoutY());
-            int coordy = getCoord(targety);
-            int coordx;
-            if (coordy%2 == 0){
-                coordx = (getCoord(targetx)-1)/2;
+            if (game.getPlayer() == checker.getType()){
+                double targetx = checker.getLayoutX(); //toBoard(checker.getLayoutX());
+                double targety = checker.getLayoutY(); //toBoard(checker.getLayoutY());
+                int coordy = getCoord(targety);
+                int coordx;
+                if (coordy%2 == 0){
+                    coordx = (getCoord(targetx)-1)/2;
+                }
+                else{
+                    coordx = (getCoord(targetx))/2;
+                }
+                moveChecker(checker,new int[] {coordy, coordx});
+            } else{
+                checker.cancelMove();
             }
-            else{
-                coordx = (getCoord(targetx))/2;
-            }
-
-            moveChecker(checker,new int[] {coordy, coordx});
-
         });
         return checker;
     }
@@ -85,7 +92,10 @@ public class GameUI extends Application {
             c.move(newCoords[0],newCoords[1]);
             b[c.getUIcoords()[0]][c.getUIcoords()[1]].occupy(c);
             b[origin[0]][origin[1]].occupy(null);
-
+            if (!game.checkVictory()){
+                cpuMove();
+            }
+            // ### put end game here
 
         } else if(game.checkLegalCapture(move)){
             System.out.println("Capturing");
@@ -94,6 +104,12 @@ public class GameUI extends Application {
             removeChecker(captured);
             c.move(newCoords[0],newCoords[1]);
             b[c.getUIcoords()[0]][c.getUIcoords()[1]].occupy(c);
+            game.getValidMoves(false);
+
+            if (!game.checkVictory() && !game.possibleCaptures()){
+                cpuMove();
+            }
+            // ### put end here
         }
         else{
             System.out.println("No move");
@@ -101,6 +117,42 @@ public class GameUI extends Application {
         }
         c.kingCheck();
     }
+
+    public void cpuMove(){
+        game.setCurrentPlayer(cpu);
+
+        int[][] move = game.getcpuMove();
+        System.out.println("CPU move ");
+        System.out.println("Move: "+move[0][0]+move[0][1]+" "+move[1][0]+move[1][1]);
+
+        if (move[1][0] == move[0][0]+2 || move[1][0] == move[0][0]-2){
+            int[] captured = game.makeCapture(move);
+            System.out.println("Capture: "+move[0][0]+move[0][1]+" "+move[1][0]+move[1][1]);
+            Checker c = b[game.convertCoord(move[0])[0]][game.convertCoord(move[0])[1]].getChecker();
+            c.move(move[1][0],move[1][1]);
+            b[game.convertCoord(move[1])[0]][game.convertCoord(move[1])[1]].occupy(c);
+            b[game.convertCoord(move[0])[0]][game.convertCoord(move[0])[1]].occupy(null);
+            System.out.println("Captured: "+captured[0]+" "+captured[1]);
+            removeChecker(captured);
+            c.kingCheck();
+        }
+        else{
+            game.makeMove(move);
+            //System.out.println("Move: "+move[0][0]+move[0][1]+" "+move[1][0]+move[1][1]);
+            System.out.println("Converted: "+game.convertCoord(move[0])[0]+game.convertCoord(move[0])[1]);
+            System.out.println("Converted: "+game.convertCoord(move[1])[0]+game.convertCoord(move[1])[1]);
+
+            Checker c = b[game.convertCoord(move[0])[0]][game.convertCoord(move[0])[1]].getChecker();
+            c.move(move[1][0],move[1][1]);
+            b[game.convertCoord(move[1])[0]][game.convertCoord(move[1])[1]].occupy(c);
+            b[game.convertCoord(move[0])[0]][game.convertCoord(move[0])[1]].occupy(null);
+            c.kingCheck();
+        }
+        game.setCurrentPlayer(player);
+
+    }
+
+
 
     public void removeChecker(int[] captured){
         int col;
@@ -126,7 +178,14 @@ public class GameUI extends Application {
         primaryStage.setTitle("Checkers");
         primaryStage.setScene(scene);
         primaryStage.show();
-        game = new Game("Connor");
+
+        String name = "Connor";
+        player = 2;
+        cpu = 1;
+        int difficulty = 0;
+
+        game = new Game(name);
+        game.setPlayer(player);
 
 
     }

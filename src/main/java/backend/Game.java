@@ -1,5 +1,6 @@
 package main.java.backend;
 
+import javax.swing.text.html.MinimalHTMLWriter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -13,7 +14,7 @@ import java.util.Scanner;
  */
 
 public class Game {
-    boolean verbose = true;
+    boolean verbose = false;
     Board b = new Board(verbose);
     String playerName;
     int human;
@@ -48,6 +49,86 @@ public class Game {
         int[] c = b.capture(move[0],move[1]);
         b.showBoard();
         return c;
+    }
+
+    public ArrayList<int[][]> getValidMoves(boolean show) {
+        ArrayList<int[][]> m = b.findMoves();
+        if (show) {
+            System.out.println("Move list:");
+        }
+
+        String moveList = "";
+        for (int row = 0; row < m.size(); row++) {
+            moveList = moveList.concat("" + m.get(row)[0][0] + m.get(row)[0][1] + " " + m.get(row)[1][0] + m.get(row)[1][1] + "\n");
+        }
+        if (show) {
+            System.out.println(moveList);
+        }
+        return m;
+    }
+
+    public void setCurrentPlayer(int player){
+        b.setCurrentPlayer(player);
+    }
+
+    public void setPlayer(int colour){
+        if (colour == 1){
+            b.setColour(1);
+        }
+        else{
+            b.setColour(2);
+        }
+    }
+
+    public int getPlayer(){
+        return b.getCurrentPlayer();
+    }
+
+    public int[][] getcpuMove(){
+        ArrayList<int[][]> moves = getValidMoves(false);
+        if (difficulty == 0){
+            Random r = new Random();
+            int n = r.nextInt(moves.size());
+            return moves.get(n);
+        }
+        else{
+            MiniMax mm = new MiniMax(b.getBoard(), b.getCpuColour(), difficulty);
+            return mm.minimaxmove();
+        }
+    }
+
+    public int[] convertCoord(int[] x){
+        int[] y = new int[2];
+        if (x[0]% 2 == 0){
+            y[1] = (x[1])*2+1;
+        }
+        else{
+            y[1] = (x[1])*2;
+        }
+        y[0] = x[0];
+        return y;
+    }
+
+    public boolean checkVictory() {
+        if (b.blackVictory()) {
+            System.out.println("Black has won!");
+            return true;
+        }
+        if (b.whiteVictory()) {
+            System.out.println("White has won!");
+            return true;
+        }
+        if (getValidMoves(false).size() <= 0) {
+            System.out.println("all out of moves");
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean possibleCaptures(){
+        getValidMoves(false);
+        return b.possibleCaptures();
     }
 
 
@@ -192,25 +273,6 @@ public class Game {
         b.showBoard();
     }
 
-    public ArrayList<int[][]> getValidMoves(boolean show) {
-        ArrayList<int[][]> m = b.findMoves();
-        if (show) {
-            System.out.println("Move list:");
-        }
-
-        String moveList = "";
-
-        // [row] [col = potential move] [0:1]=
-
-        for (int row = 0; row < m.size(); row++) {
-            moveList = moveList.concat("" + m.get(row)[0][0] + m.get(row)[0][1] + " " + m.get(row)[1][0] + m.get(row)[1][1] + "\n");
-        }
-        if (show) {
-            System.out.println(moveList);
-        }
-        return m;
-    }
-
     public int[][] getUserMove() {
         Scanner myObj = new Scanner(System.in);
         System.out.println("Enter move");
@@ -259,20 +321,7 @@ public class Game {
         }
     }
 
-    public boolean checkVictory() {
-        if (b.blackVictory()) {
-            return true;
-        }
-        if (b.whiteVictory()) {
-            return true;
-        }
-        if (getValidMoves(false).size() <= 0) {
-            System.out.println("all out of moves");
-            return true;
-        }
 
-        return false;
-    }
 
     public void gameOver() {
         System.out.println("black: " + b.blackCheckers);

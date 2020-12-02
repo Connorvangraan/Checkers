@@ -3,6 +3,11 @@ package main.java.frontend;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Polygon;
+import main.java.testingboard.PieceType;
+
+import static main.java.testingboard.GameUI.TILE_SIZE;
 
 
 public class Checker extends StackPane {
@@ -39,6 +44,21 @@ public class Checker extends StackPane {
             c.setFill(Color.BLACK);
         }
         getChildren().add(c);
+        Ellipse e = new Ellipse(size * 0.2, size * 0.2);
+        if (type == 1){
+            e.setFill(Color.WHITE);
+            e.setStroke(Color.BLACK);
+        }
+        else{
+            e.setFill(Color.BLACK);
+            e.setStroke(Color.WHITE);
+
+        }
+        e.setStrokeWidth(size * 0.05);
+        e.setTranslateX((size - size * 0.5 * 2) / 2);
+        e.setTranslateY((size - size * 0.5 * 2) / 2);
+
+        getChildren().addAll(e);
 
         setOnMousePressed(event -> {
             mx = event.getSceneX();
@@ -107,11 +127,27 @@ public class Checker extends StackPane {
         if (type == 1 && row == 7){
             king=true;
             System.out.println("Congrats white checker, you are king");
+            makeKing();
 
         }
         else if (type == 2 && row == 0){
             king=true;
             System.out.println("Congrats black checker, you are king");
+            makeKing();
+        }
+    }
+    public void makeKing(){
+        for (int i=0; i < 3; i++){
+            Polygon polygon = new Polygon();
+            polygon.getPoints().addAll(new Double[]{
+                    10.0, 0.0,  0.0, 10.0,20.0, 10.0
+                     });
+            polygon.setFill(Color.KHAKI);
+            //polygon.setStrokeWidth(0.5);
+            //polygon.setStroke(Color.BLACK);
+            getChildren().add(polygon);
+            polygon.setTranslateX((polygon.getLayoutX()-8)+i*8);
+            polygon.setTranslateY(-3);
         }
     }
 

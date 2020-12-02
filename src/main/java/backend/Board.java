@@ -70,6 +70,10 @@ public class Board {
         b=newb;
     }
 
+    public boolean possibleCaptures(){
+        return captureOption;
+    }
+
 
     /**
      * Sets up the board
@@ -214,6 +218,14 @@ public class Board {
             b[c[0]][c[1]] = empty;
             whiteCheckers -= 1;
         }
+
+        if (b[y[0]][y[1]] == white && y[0] == 7){
+            b[y[0]][y[1]] = kingwhite;
+        }
+        else if (b[y[0]][y[1]] == black && y[0] == 0){
+            b[y[0]][y[1]] = kingblack;
+        }
+
         return c;
 
         // 2 1 taking 3 2 to 4 3
