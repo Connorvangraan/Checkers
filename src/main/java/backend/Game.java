@@ -10,7 +10,6 @@ import java.util.Scanner;
  * TODO:
  * add heuristics
  * add pruning
- * add ui
  */
 
 public class Game {
@@ -122,8 +121,17 @@ public class Game {
             System.out.println("all out of moves");
             return true;
         }
-
         return false;
+    }
+
+    public int getVictor(){
+        if (b.blackVictory()) {
+            return 2;
+        }
+        if (b.whiteVictory()) {
+            return 1;
+        }
+        else return 0;
     }
 
     public boolean possibleCaptures(){

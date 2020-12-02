@@ -74,10 +74,9 @@ public class Checker extends StackPane {
     }
 
     public void move(double y, double x){
+        System.out.println(""+y+x);
         col = (int)x;
         row = (int)y;
-
-        System.out.println("Moving");
 
         if (row%2 == 0){
             x = (x*2)+1;
@@ -85,7 +84,6 @@ public class Checker extends StackPane {
         else{
             x = x*2;
         }
-        //System.out.println("Coords: "+row+" "+x);
 
         originx = (x*size) + ((size/3)/2);
         originy = (row*size) + ((size/3)/2);
