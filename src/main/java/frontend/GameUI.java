@@ -55,10 +55,33 @@ public class GameUI extends Application {
         }
         return root;
     }
+    double my;
+    double mx;
 
     public Checker makeNewChecker(int type, int row, int col){
         Checker checker = new Checker(type, row, col,tilesize);
+        checker.setOnMousePressed(event -> {
+            mx = event.getSceneX();
+            my = event.getSceneY();
+            ArrayList<int[][]> moves = game.getValidMoves(false);
+            for (int[][] move: moves){
+                if (move[0][0] == checker.getCoords()[0] && move[0][1] == checker.getCoords()[1]){
+                    System.out.println(""+move[1][0]+" "+move[1][1]);
+                    int[] target = game.convertCoord(move[1]);
+                    System.out.println(""+move[0]+move[1]);
+                    b[target[0]][target[1]].markTarget();
+                }
+            }
+        });
+
+        checker.setOnMouseDragged(event -> {
+            checker.setLayoutX(event.getSceneX() - tilesize/2);
+            checker.setLayoutY(event.getSceneY());
+            //relocate(event.getSceneX() - tilesize/2, event.getSceneY());
+        });
+
         checker.setOnMouseReleased(e -> {
+            clearMarks();
             if (game.getPlayer() == checker.getType()){
                 double targetx = checker.getLayoutX(); //toBoard(checker.getLayoutX());
                 double targety = checker.getLayoutY(); //toBoard(checker.getLayoutY());
@@ -152,8 +175,6 @@ public class GameUI extends Application {
 
     }
 
-
-
     public void removeChecker(int[] captured){
         int col;
         if (captured[0]%2 == 0){
@@ -170,6 +191,13 @@ public class GameUI extends Application {
     private int getCoord(double x){
         double coord = x/tilesize;
         return (int) Math.round(coord);
+    }
+
+    public void clearMarks(){
+        for (int t=0; t < tiles.getChildren().size(); t++){
+            Tile tile = (Tile)tiles.getChildren().get(t);
+            tile.unmark();
+        }
     }
 
     @Override

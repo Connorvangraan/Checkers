@@ -1,5 +1,6 @@
 package main.java.frontend;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 
 public class Tile extends Rectangle {
@@ -23,6 +24,7 @@ public class Tile extends Rectangle {
         else{
             setFill(Color.WHITE);
         }
+        setStrokeWidth(5);
 
     }
 
@@ -41,6 +43,13 @@ public class Tile extends Rectangle {
 
     public Checker getChecker(){
         return checker;
+    }
+
+    public void markTarget(){
+        setStroke(Color.BLUEVIOLET);
+    }
+    public void unmark(){
+        setStroke(Color.TRANSPARENT);
     }
 
 }

@@ -59,16 +59,6 @@ public class Checker extends StackPane {
         e.setTranslateY((size - size * 0.5 * 2) / 2);
 
         getChildren().addAll(e);
-
-        setOnMousePressed(event -> {
-            mx = event.getSceneX();
-            my = event.getSceneY();
-        });
-
-        setOnMouseDragged(event -> {
-            //relocate(event.getSceneX() - mx + originx, event.getSceneY() - my + originy);
-            relocate(event.getSceneX() - size/2, event.getSceneY());
-        });
     }
 
     public int getType() {
