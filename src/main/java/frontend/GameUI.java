@@ -29,9 +29,14 @@ public class GameUI extends Application {
     String name;
     int[] ready = new int[3];
     boolean guide = false;
+    double my,mx;
     //Group trails = new Group();
 
-
+    /**
+     *  Creates the UI board
+     * @return returns the created board
+     * @throws InterruptedException due to use of the time sleep functio
+     */
     private Parent createBoard() throws InterruptedException {
         Pane root = new Pane();
         root.setPrefSize(height * tilesize, width * tilesize);
@@ -64,8 +69,14 @@ public class GameUI extends Application {
         return root;
     }
 
-    double my,mx;
-
+    /**
+     * makes new checker at the given coordinates of the given type, returns the checker
+     *
+     * @param type the colour of the checker, white = 1 & black = 2
+     * @param row the row of the checker
+     * @param col the column of the checker
+     * @return returns the new checker
+     */
     public Checker makeNewChecker(int type, int row, int col) {
         Checker checker = new Checker(type, row, col, tilesize);
         checker.setOnMousePressed(event -> {
@@ -123,9 +134,15 @@ public class GameUI extends Application {
         return checker;
     }
 
+    /**
+     *
+     * @param c the checker being moved
+     * @param newCoords the coordinates the checker is being moved to
+     * @throws InterruptedException due to use of the time sleep function
+     */
     private void moveChecker(Checker c, int[] newCoords) throws InterruptedException {
-        System.out.println("Source: " + c.getCoords()[0] + " " + c.getCoords()[1]);
-        System.out.println("Target: " + newCoords[0] + " " + newCoords[1]);
+        //System.out.println("Source: " + c.getCoords()[0] + " " + c.getCoords()[1]);
+        //System.out.println("Target: " + newCoords[0] + " " + newCoords[1]);
 
         int oldCoordy = c.getCoords()[0];
         int oldCoordx = c.getCoords()[1];
@@ -192,6 +209,10 @@ public class GameUI extends Application {
         c.kingCheck();
     }
 
+    /**
+     * Run the cpu move, called after a user move
+     * @throws InterruptedException due to use of the time sleep functio
+     */
     public void cpuMove() throws InterruptedException {
         game.setCurrentPlayer(cpu);
         TimeUnit.MILLISECONDS.sleep(50);
@@ -252,6 +273,11 @@ public class GameUI extends Application {
 
     }
 
+    /**
+     * Removes the checker at the given coords from the board
+     * @param captured the coordinates of the checker to remove
+     * @return returns true if the captured checker was a king
+     */
     public boolean removeChecker(int[] captured) {
         int col;
         if (captured[0] % 2 == 0) {
@@ -267,11 +293,19 @@ public class GameUI extends Application {
         return k;
     }
 
+    /**
+     * Divides the value by tilesize to find the coordinate where the checker is dropped by the user
+     * @param x the value to be scaled down
+     * @return the scaled down value
+     */
     private int getCoord(double x) {
         double coord = x / tilesize;
         return (int) Math.round(coord);
     }
 
+    /**
+     * Clears tile guidance marks when the user has made a move
+     */
     public void clearMarks() {
         for (int t = 0; t < tiles.getChildren().size(); t++) {
             Tile tile = (Tile) tiles.getChildren().get(t);
@@ -279,6 +313,10 @@ public class GameUI extends Application {
         }
     }
 
+    /**
+     * Creates popup window that alerts the user of the nature of the invalidity of their move
+     * @param message
+     */
     public void popup(String message){
         Stage s = new Stage();
         Label l = new Label(message);
@@ -295,6 +333,13 @@ public class GameUI extends Application {
         s.setTitle("Error");
         s.show();
     }
+
+    /**
+     * The following all create a new window
+     * Start, rules, game and end
+     * Game is the board GUI
+     *
+     */
 
     public void startScreen(Stage s) {
         VBox v = new VBox();

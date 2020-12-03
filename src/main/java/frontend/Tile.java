@@ -1,10 +1,7 @@
 package main.java.frontend;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.Rectangle;
 
-import java.util.concurrent.TimeUnit;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class Tile extends Rectangle {
     int row, col, size;
@@ -12,6 +9,13 @@ public class Tile extends Rectangle {
     Checker checker;
     Trail trail;
 
+    /**
+     * Creates tile. If real then it is red, otherwise it is white
+     * @param real true for tiles that can be moved on
+     * @param row board row
+     * @param col board column
+     * @param size tilesize
+     */
     public Tile(boolean real, int row, int col,int size) {
         this.row = row;
         this.col = col;
@@ -32,13 +36,16 @@ public class Tile extends Rectangle {
 
     }
 
-    public void occupy(Checker c) throws InterruptedException {
+    /**
+     * If a checker is on the tile then this is run,
+     * @param c the checker on the tile
+     */
+    public void occupy(Checker c) {
         checker = c;
         trail = new Trail(size, row, col);
-        //TimeUnit.SECONDS.sleep(1);
     }
 
-    public void makeTrail(Trail t) throws InterruptedException {
+    public void makeTrail(Trail t){
         trail = t;
     }
 

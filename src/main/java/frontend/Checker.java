@@ -12,6 +12,13 @@ public class Checker extends StackPane {
     double originx, originy;
     boolean king = false;
 
+    /**
+     * Creates the checker piece seen on the board and stores its coordinates
+     * @param t the type of checker
+     * @param row the row it is on
+     * @param col the column it is on
+     * @param size the tilesize of the board
+     */
     public Checker(int t, int row, int col, int size){ // 1 = white , 2 = black
         type = t;
         this.row = row;
@@ -58,6 +65,10 @@ public class Checker extends StackPane {
         getChildren().addAll(e);
     }
 
+    /**
+     * Type is the colour of the checker. White = 1, black = 2
+     * @return
+     */
     public int getType() {
         return type;
     }
@@ -70,6 +81,11 @@ public class Checker extends StackPane {
         return new double[] {originx, originy};
     }
 
+    /**
+     * Changes the coordinates of the checker to the y,x on the board
+     * @param y the row
+     * @param x the column
+     */
     public void move(double y, double x){
         System.out.println(""+y+x);
         col = (int)x;
@@ -91,15 +107,26 @@ public class Checker extends StackPane {
 
     }
 
+    /**
+     * Run when an invalid move is attempted. Returns the check to original location
+     */
     public void cancelMove(){
         System.out.println(""+originx+""+originy);
         relocate(originx, originy);
     }
 
+    /**
+     * gets the coordinates on the backend board (i.e. 4 columns, 8 rows)
+     * @return
+     */
     public int[] getCoords(){
         return new int[] {row,col};
     }
 
+    /**
+     * Gets the coordinates on the actual board
+     * @return
+     */
     public int[] getUIcoords(){
         if (row%2 == 0){
             return new int[] {row, (col*2)+1};
@@ -109,21 +136,25 @@ public class Checker extends StackPane {
         }
     }
 
+    /**
+     * Makes the checker king if it has reached the baseline
+     */
     public void kingCheck(){
         if (type == 1 && row == 7){
             king=true;
-            System.out.println("Congrats white checker, you are king");
             makeKing();
 
         }
         else if (type == 2 && row == 0){
             king=true;
-            System.out.println("Congrats black checker, you are king");
             makeKing();
         }
     }
 
-    public void makeKing(){
+    /**
+     * Draws the little crown on the checker, which is actually just three triangles next to each other, but dont tell the checker that
+     */
+    private void makeKing(){
         for (int i=0; i < 3; i++){
             Polygon polygon = new Polygon();
             polygon.getPoints().addAll(new Double[]{
@@ -138,10 +169,18 @@ public class Checker extends StackPane {
         }
     }
 
+    /**
+     * Returns true if checker is a king
+     * @return
+     */
     public boolean isKing() {
         return king;
     }
 
+    /**
+     * Makes checker king
+     * @param king
+     */
     public void setKing(boolean king) {
         this.king = king;
         makeKing();

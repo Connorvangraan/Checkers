@@ -9,23 +9,18 @@ public class Board {
     static int black = 2;
     static int kingwhite = 3;
     static int kingblack = 4;
-    int currentPlayer;
-    int currentColour;
-    int humanColour;
-    int cpuColour;
-    int whiteCheckers = 0;
-    int blackCheckers = 0;
-    boolean verbose;
-
-    boolean captureOption = false;
+    int currentPlayer, humanColour, cpuColour, whiteCheckers = 0, blackCheckers = 0;
+    boolean verbose, captureOption = false;
 
     public Board(boolean verbose) {
         this.verbose = verbose;
         setup();
-        //testsetup();
     }
 
-
+    /**
+     * Sets current player to param
+     * @param currentPlayer
+     */
     public void setCurrentPlayer(int currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
@@ -34,14 +29,26 @@ public class Board {
         return currentPlayer;
     }
 
+    /**
+     * Gets quantity of white checkers
+     * @return
+     */
     public int getWhiteCheckers() {
         return whiteCheckers;
     }
 
+    /**
+     * Gets quantity of black checkers
+     * @return
+     */
     public int getBlackCheckers() {
         return blackCheckers;
     }
 
+    /**
+     * Sets human player colour to param and cpu as the other colour
+     * @param human
+     */
     public void setColour(int human) {
         if (human == 1) {
             humanColour = white;
@@ -53,6 +60,7 @@ public class Board {
         currentPlayer = black;
     }
 
+
     public int getHumanColour() {
         return humanColour;
     }
@@ -61,6 +69,10 @@ public class Board {
         return cpuColour;
     }
 
+    /**
+     * Gets the backend board values
+     * @return
+     */
     public int[][] getBoard() {
         return b;
     }
@@ -69,6 +81,10 @@ public class Board {
         b = newb;
     }
 
+    /**
+     * captureOption is true if captures are possible and false if not
+     * @return
+     */
     public boolean possibleCaptures() {
         return captureOption;
     }
@@ -83,9 +99,6 @@ public class Board {
         b = new int[8][4];
         for (int row = 0; row < b.length; row++) {
             for (int col = 0; col < b[row].length; col++) {
-                //System.out.println("row:" + row);
-                //System.out.println("col:" + col);
-                //System.out.println();
                 if (row < 3) {
                     b[row][col] = white;
                     whiteCheckers++;
@@ -97,57 +110,11 @@ public class Board {
                 }
             }
         }
-
-        /*
-        for (int i = 0; i < b.length; i++) {
-            for (int j = 0; j < b[i].length; j++) {
-                System.out.print(b[i][j]);
-            }
-            System.out.println();
-        }*/
-
-        //new Thread(() -> Application.launch(BoardGUI.class)).start();
-        //gui = new BoardGUI();
-        //showBoard();
     }
 
-    public void testsetup() {
-        b = new int[8][4];
-        for (int row = 0; row < b.length; row++) {
-            for (int col = 0; col < b[row].length; col++) {
-                if (row == 3 && col == 2) {
-                    b[row][col] = kingwhite;
-                    whiteCheckers++;
-                } else if (row == 5 && col == 1) {
-                    b[row][col] = kingwhite;
-                    whiteCheckers++;
-                } else if (row == 7 && col == 2) {
-                    b[row][col] = black;
-                    blackCheckers++;
-                } else if (row == 6 && col == 0) {
-                    b[row][col] = kingblack;
-                    blackCheckers++;
-                } else {
-                    b[row][col] = empty;
-                }
-            }
-        }
-        //System.out.println("white at start: "+whiteCheckers);
-        //System.out.println("black at start: "+blackCheckers);
-
-        /*
-        for (int i = 0; i < b.length; i++) {
-            for (int j = 0; j < b[i].length; j++) {
-                System.out.print(b[i][j]);
-            }
-            System.out.println();
-        }*/
-
-        //new Thread(() -> Application.launch(BoardGUI.class)).start();
-        //gui = new BoardGUI();
-        //showBoard();
-    }
-
+    /**
+     * Used to print the backend board in development
+     */
     public void showBoard() {
         String printb = "";
         for (int row = 0; row < b.length; row++) {
@@ -176,10 +143,17 @@ public class Board {
             printb = printb.concat("\n");
         }
         System.out.println(printb);
-        //gui.moveChecker(new int[]{0}, new int[]{1});
     }
 
-    // from x to y
+    /**
+     * Makes move on the backend board from value at x to y
+     * Can make both captures and movements
+     * Checks if checker should be a king and updates it
+     * @param x coordinate on board
+     * @param y coordinate on board
+     * @param player player number
+     * @return the type of move. Move = 1, capture = 2
+     */
     public int makeMove(int[] x, int[] y, int player) {
         int type = 0;
         if (validMove(x, y)) {
@@ -199,10 +173,15 @@ public class Board {
             b[y[0]][y[1]] = kingwhite;
             //System.out.println("White checker becomes king");
         }
-        //showBoard();
         return type;
     }
 
+    /**
+     * Runs capture on backend board
+     * @param x source coord
+     * @param y movement target coord
+     * @return the captured checker coords
+     */
     public int[] capture(int[] x, int[] y) {
         b[y[0]][y[1]] = b[x[0]][x[1]];
         b[x[0]][x[1]] = empty;
@@ -231,13 +210,14 @@ public class Board {
         }
 
         return c;
-
-        // 2 1 taking 3 2 to 4 3
-        // 2 1 taking 3 1 to 4 0
-        // 3 2 taking 2 1 to 1 1
     }
 
-    // implement this
+    /**
+     * Gets the captured checker coordinates
+     * @param x source coord
+     * @param y target coord
+     * @return captured coord
+     */
     private int[] getCaptured(int[] x, int[] y) {
         int i = (y[0] - x[0]) / 2;
         int j = 0;
@@ -262,12 +242,17 @@ public class Board {
         return coord;
     }
 
+    /**
+     * Checks if a capture is valid
+     * @param x source coord
+     * @param y movement target coord
+     * @return true if capture is valid
+     */
     public boolean validCapture(int[] x, int[] y) {
         if (y[0] < 0 || y[0] > 7 || y[1] < 0 || y[1] > 3) {
             return false;
         }
-        //System.out.println("checking capture: "+x[0]+x[1]);
-        //System.out.println("of: "+y[0]+y[1]);
+
 
         if (b[x[0]][x[1]] == white && b[y[0]][y[1]] == empty) {
             if (y[0] < x[0]) {
@@ -280,7 +265,6 @@ public class Board {
             // for odd = -1 / 0
 
             if (x[0] % 2 == 0) {
-                //System.out.println("beep");
                 if (y[1] > x[1]) {
                     j = x[1] + 1;
                 } else {
@@ -427,6 +411,12 @@ public class Board {
         return false;
     }
 
+    /**
+     * Checks if a move is valid
+     * @param x source coord
+     * @param y target coord
+     * @return true if the move is valid
+     */
     public boolean validMove(int[] x, int[] y) {
         if (verbose) {
             System.out.println("Checking: " + x[0] + x[1] + " " + y[0] + y[1]);
@@ -528,6 +518,10 @@ public class Board {
         return false;
     }
 
+    /**
+     * Checks if white team has won
+     * @return true if they have
+     */
     public boolean whiteVictory() {
         if (blackCheckers == 0) {
             return true;
@@ -542,6 +536,10 @@ public class Board {
         return false;
     }
 
+    /**
+     * Checks if black team has won
+     * @return true if they have
+     */
     public boolean blackVictory() {
         if (whiteCheckers == 0) {
             return true;
@@ -559,6 +557,10 @@ public class Board {
         return false;
     }
 
+    /**
+     * Finds all possible moves for the current player
+     * @return arraylist of all legal moves
+     */
     public ArrayList<int[][]> findMoves() {
         captureOption = false;
         // gets all possible moves for all a players checkers
@@ -589,7 +591,6 @@ public class Board {
                                 }
                             } else {
                                 // checks movements for odd
-                                // can probably move this
 
                                 if (validMove(current, new int[]{row + 1, col})) {
                                     moves.add(new int[][]{current, new int[]{row + 1, col}});
@@ -611,7 +612,6 @@ public class Board {
                             }
                         }
                         if (b[row][col] == black || b[row][col] == kingwhite || b[row][col] == kingblack) {
-                            //System.out.println("boop");
                             // same for black counters
                             // checks for even row
                             if (row % 2 == 0) {
@@ -645,8 +645,7 @@ public class Board {
             }
         }
 
-        //System.out.println("Moves: "+moves.size());
-        //System.out.println("Captures: "+captures.size());
+        // if there are captures available, they must be done
         if (captures.size() > 0) {
             captureOption = true;
             return captures;

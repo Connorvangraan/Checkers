@@ -1,27 +1,25 @@
 package main.java.backend;
 
-import main.java.backend.Board;
-
 import java.util.ArrayList;
+
 
 public class MiniMax {
     static int empty = 8;
     static int white = 1;
     static int black = 2;
-
-    Board b;
-    int maximisingPlayer;
-    int minimisingPlayer;
-    int currentPlayer;
-
+    static int kingwhite = 3, kingblack = 4;
     static int secount, decount;
 
+    Board b;
+    int maximisingPlayer, minimisingPlayer, currentPlayer, difficulty;
     int[][] bestMove;
 
-    int difficulty;
-
-    static int kingwhite = 3, kingblack = 4;
-
+    /**
+     * Sets up the minimax function to be run on the board
+     * @param board the current backend board
+     * @param maximisingPlayer the player using the minimax
+     * @param difficulty the depthlimit
+     */
     public MiniMax(int[][] board, int maximisingPlayer, int difficulty) {
         int[][] newboard = new int[8][4];
         for (int row = 0; row < board.length; row++) {
@@ -43,6 +41,11 @@ public class MiniMax {
         }
     }
 
+    /**
+     * Makes a deepcopy of the board
+     * @param original
+     * @return
+     */
     public Board cloneBoard(Board original) {
         Board clone = new Board(false);
         int[][] tempboard = original.getBoard().clone();
@@ -53,30 +56,33 @@ public class MiniMax {
             }
         }
         clone.setBoard(clonedboard);
-        String player = String.valueOf(original.getCurrentPlayer());
-        clone.setCurrentPlayer(Integer.valueOf(player));
-        String colour = String.valueOf(original.getHumanColour());
-        clone.setColour(Integer.valueOf(colour));
+        clone.setCurrentPlayer(original.getCurrentPlayer());
+        clone.setColour(original.getHumanColour());
         return clone;
     }
 
+    /**
+     * Finds the best move based off the board
+     * @return
+     */
     public int[][] minimaxmove() {
         minimax(b, difficulty, maximisingPlayer, -1, 1); //, -1, 1
-        System.out.println("Static evals: " + secount);
-        System.out.println("Dyanmic evals: " + decount);
         return bestMove;
     }
 
-    // should be private
+    /**
+     * The actual minimax function that determines the best move
+     * Board cloned before being passes in param during recursion
+     * @param board
+     * @param depth
+     * @param currentPlayer
+     * @param alpha
+     * @param beta
+     * @return
+     */
     public double minimax(Board board, int depth, int currentPlayer, double alpha, double beta) { //, int alpha, int beta
-        //System.out.println("minimising: "+minimisingPlayer);
-        //System.out.println("maximising: "+maximisingPlayer);
         board.setCurrentPlayer(currentPlayer);
-        //System.out.println("Player " + board.getCurrentPlayer());
         double bestscore = -1;
-
-        int humanColour = board.getHumanColour();
-        int cpuColour = board.getCpuColour();
 
         if (currentPlayer == maximisingPlayer) {
             bestscore = -1;
@@ -84,7 +90,7 @@ public class MiniMax {
             bestscore = 1;
         }
 
-        if (depth == 0 || board.blackVictory() || board.whiteVictory()) { //|| (board.findMoves().isEmpty())
+        if (depth == 0 || board.blackVictory() || board.whiteVictory()) {
             secount++;
             return getHeuristics(board,currentPlayer);
         }
@@ -98,8 +104,6 @@ public class MiniMax {
             decount++;
 
             if (currentPlayer == maximisingPlayer) {
-                //System.out.println("beep");
-                // do move on clone board here
                 Board clone = cloneBoard(board);
                 clone.makeMove(move[0], move[1], maximisingPlayer); //put move here);
 
@@ -114,7 +118,6 @@ public class MiniMax {
                    }
                }
                 currentscore = minimax(clone, depth - 1, minimisingPlayer, alpha, beta);
-                //bestscore = Math.max(bestscore, currentscore);
                 if (bestscore < currentscore) {
                     tempmove = move;
                     bestscore = currentscore;
@@ -128,7 +131,6 @@ public class MiniMax {
                 }
 
             } else {
-                // do move on clone board here
                 Board clone = cloneBoard(board);
                 clone.makeMove(move[0], move[1], minimisingPlayer);//put move here);
                 currentscore = minimax(clone, depth - 1, maximisingPlayer, alpha, beta);
@@ -161,6 +163,12 @@ public class MiniMax {
     }
 
 
+    /**
+     * Gets quantity difference in checkers on the board, as well as the amount of kings
+     * @param board
+     * @param player
+     * @return heuristics value
+     */
     public double getHeuristics(Board board,int player) {
         double h;
         int whitekings = 0;
@@ -188,12 +196,11 @@ public class MiniMax {
         int diffwhiteblack = whitecheckers - blackcheckers;
 
         if (maximisingPlayer == white) {
-            System.out.println(maximisingPlayer);
             int checkerdiff = board.getWhiteCheckers() - board.getBlackCheckers();
-            return diffwhiteblack + (whitekings*1.5);// - board.getBlackCheckers() ;//+ (whitekings * 1.2)
+            return diffwhiteblack + (whitekings*1.5);
         } else {
             int checkerdiff = board.getBlackCheckers() - board.getWhiteCheckers();
-            return diffblackwhite + (blackkings*1.5);// - board.getWhiteCheckers() ;//+ (blackkings  * 1.2)
+            return diffblackwhite + (blackkings*1.5);
         }
 
     }
