@@ -144,11 +144,7 @@ public class GameUI extends Application {
         //System.out.println("Source: " + c.getCoords()[0] + " " + c.getCoords()[1]);
         //System.out.println("Target: " + newCoords[0] + " " + newCoords[1]);
 
-        int oldCoordy = c.getCoords()[0];
-        int oldCoordx = c.getCoords()[1];
-        int[] origin = new int[]{oldCoordy, oldCoordx};
-        //System.out.println("##: " + origin[0] + origin[1]);
-        //System.out.println("##: " + newCoords[0] + newCoords[1]);
+        int[] origin = new int[]{c.getCoords()[0], c.getCoords()[1]};
         int[][] move = new int[][]{origin, newCoords};
         boolean moveAvailable = false;
         for (int[][] m : game.getValidMoves(false)){
@@ -162,30 +158,25 @@ public class GameUI extends Application {
                 game.makeMove(move);
                 c.move(newCoords[0], newCoords[1]);
                 b[c.getUIcoords()[0]][c.getUIcoords()[1]].occupy(c);
-                //System.out.println("after move: " + c.getUIcoords()[0] + c.getUIcoords()[1] + b[c.getUIcoords()[0]][c.getUIcoords()[1]].occupied());
                 b[origin[0]][game.convertCoord(origin)[1]].occupy(null);
 
-                //System.out.println("left behind: " + origin[0] + origin[1] + b[origin[0]][game.convertCoord(origin)[1]].occupied());
                 if (!game.checkVictory()) {
                     cpuMove();
                 }
                 if (game.checkVictory()) {
                     endScreen();
                 }
+
             } else if (game.checkLegalCapture(move)) {
                 //System.out.println("Capturing");
                 int[] captured = game.makeCapture(move);
-                //System.out.println("Captured: " + captured[0] + " " + captured[1]);
                 c.move(newCoords[0], newCoords[1]);
-                //System.out.println("Checker is now at: " + c.getUIcoords()[0] + c.getCoords()[1]);
                 boolean kingcaptured = removeChecker(captured);
                 if (kingcaptured) {
                     c.setKing(true);
                 }
                 b[c.getUIcoords()[0]][c.getUIcoords()[1]].occupy(c);
-                //System.out.println("moved to: " + c.getUIcoords()[0] + c.getUIcoords()[1] + b[c.getUIcoords()[0]][c.getUIcoords()[1]].occupied());
                 b[origin[0]][game.convertCoord(origin)[1]].occupy(null);
-                //System.out.println("moved from: " + origin[0] + origin[1] + b[origin[0]][origin[1]].occupied());
                 game.getValidMoves(false);
 
                 if (!game.checkVictory() && (!game.possibleCaptures() || kingcaptured)) {

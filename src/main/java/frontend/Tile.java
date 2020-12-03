@@ -7,7 +7,6 @@ public class Tile extends Rectangle {
     int row, col, size;
     boolean real;
     Checker checker;
-    Trail trail;
 
     /**
      * Creates tile. If real then it is red, otherwise it is white
@@ -42,17 +41,13 @@ public class Tile extends Rectangle {
      */
     public void occupy(Checker c) {
         checker = c;
-        trail = new Trail(size, row, col);
     }
 
-    public void makeTrail(Trail t){
-        trail = t;
-    }
 
-    public void removeTrail(){
-        trail = null;
-    }
-
+    /**
+     *
+     * @return true if there is a checker on the tile
+     */
     public boolean occupied(){
         if (checker != null){
             return true;
@@ -62,14 +57,24 @@ public class Tile extends Rectangle {
         }
     }
 
+    /**
+     *
+     * @return checker on the tile
+     */
     public Checker getChecker(){
         return checker;
     }
 
+    /**
+     * Marks tile with movement guidelines
+     */
     public void markTarget(){
         setStroke(Color.BLUEVIOLET);
     }
 
+    /**
+     * Removes movement guidelines
+     */
     public void unmark(){
         setStroke(Color.TRANSPARENT);
     }

@@ -221,7 +221,7 @@ public class Game {
         if (move[0][0]==move[1][0]){
             return "Can't move to the same row";
         }
-        return "Unable to make that move";
+        return "Invalid move";
 
     }
 
