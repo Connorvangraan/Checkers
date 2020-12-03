@@ -17,16 +17,15 @@ public class Game {
     /**
      * Doesn't do anything other than sets the player name
      * @param playerName 
-     * @throws InterruptedException
      */
-    public Game(String playerName) throws InterruptedException {
+    public Game(String playerName) {
         this.playerName = playerName;
     }
 
     /**
      * Returns true if the move is legal and false if it is not
      * @param move move[0] is the source and move[1] is the target
-     * @return
+     * @return true if legal
      */
     public boolean checkLegalMove(int[][] move) {
         return b.validMove(move[0], move[1]);
@@ -35,7 +34,7 @@ public class Game {
     /**
      * Returns true if the capture is legal and false if it is not
      * @param move move[0] is the source and move[1] is the target
-     * @return
+     * @return true if legal
      */
     public boolean checkLegalCapture(int[][] move) {
         return b.validCapture(move[0], move[1]);
@@ -44,7 +43,6 @@ public class Game {
     /**
      * makes move on the backend board given by the param
      * @param move move[0] is the source and move[1] is the target
-     * @return
      */
     public void makeMove(int[][] move) {
         b.makeMove(move[0], move[1], human);
@@ -53,18 +51,16 @@ public class Game {
     /**
      * Makes capture on the backend board given by the param
      * @param move move[0] is the source and move[1] is the target
-     * @return
+     * @return captured checker coord
      */
     public int[] makeCapture(int[][] move) {
-        int[] c = b.capture(move[0],move[1]);
-        b.showBoard();
-        return c;
+        return b.capture(move[0],move[1]);
     }
 
     /**
      * Gets a list of all the valid moves for the user
-     * @param show
-     * @return
+     * @param show true if you want to see the move list
+     * @return List of valid moves
      */
     public ArrayList<int[][]> getValidMoves(boolean show) {
         ArrayList<int[][]> m = b.findMoves();
@@ -73,8 +69,8 @@ public class Game {
         }
 
         String moveList = "";
-        for (int row = 0; row < m.size(); row++) {
-            moveList = moveList.concat("" + m.get(row)[0][0] + m.get(row)[0][1] + " " + m.get(row)[1][0] + m.get(row)[1][1] + "\n");
+        for (int[][] ints : m) {
+            moveList = moveList.concat("" + ints[0][0] + ints[0][1] + " " + ints[1][0] + ints[1][1] + "\n");
         }
         if (show) {
             System.out.println(moveList);
@@ -105,7 +101,7 @@ public class Game {
 
     /**
      * returns the current player
-     * @return
+     * @return current player. white = 1, black = 2
      */
     public int getPlayer(){
         return b.getCurrentPlayer();
@@ -139,8 +135,8 @@ public class Game {
 
     /**
      * Converts coord x from the backend format to the frontend format
-     * @param x
-     * @return
+     * @param x coord to be converted
+     * @return converted coord
      */
     public int[] convertCoord(int[] x){
         int[] y = new int[2];
@@ -155,21 +151,21 @@ public class Game {
     }
 
     /**
-     * Returns true if the game is over
-     * @return
+     *
+     * @return true if the game is over
      */
     public boolean checkVictory() {
         int temp = b.getCurrentPlayer();
         if (b.blackVictory()) {
-            System.out.println("Black has won!");
+            //System.out.println("Black has won!");
             return true;
         }
         if (b.whiteVictory()) {
-            System.out.println("White has won!");
+            //System.out.println("White has won!");
             return true;
         }
         if (getValidMoves(false).size() <= 0) {
-            System.out.println("all out of moves");
+            //System.out.println("all out of moves");
             return true;
         }
         b.setCurrentPlayer(temp);
@@ -178,7 +174,7 @@ public class Game {
 
     /**
      * Returns the winner number of the game. white = 1, black = 2, none = 0
-     * @return
+     * @return winner number
      */
     public int getVictor(){
         int temp = b.getCurrentPlayer();
@@ -196,8 +192,7 @@ public class Game {
 
     /**
      * Used to see if multi jump is possible
-     * Returns true if there are captures available
-     * @return
+     * @return true if there are captures available
      */
     public boolean possibleCaptures(){
         getValidMoves(false);
@@ -232,7 +227,7 @@ public class Game {
 
     /**
      * Sets the difficulty to x
-     * @param x
+     * @param x depthlimit
      */
     public void setDifficulty(int x) {
         if (x == 0) {

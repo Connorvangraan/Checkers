@@ -66,8 +66,8 @@ public class Checker extends StackPane {
     }
 
     /**
-     * Type is the colour of the checker. White = 1, black = 2
-     * @return
+     * Type is the colour of the checker.
+     * @return  White = 1, black = 2
      */
     public int getType() {
         return type;
@@ -87,7 +87,6 @@ public class Checker extends StackPane {
      * @param x the column
      */
     public void move(double y, double x){
-        System.out.println(""+y+x);
         col = (int)x;
         row = (int)y;
 
@@ -111,13 +110,12 @@ public class Checker extends StackPane {
      * Run when an invalid move is attempted. Returns the check to original location
      */
     public void cancelMove(){
-        System.out.println(""+originx+""+originy);
         relocate(originx, originy);
     }
 
     /**
      * gets the coordinates on the backend board (i.e. 4 columns, 8 rows)
-     * @return
+     * @return coordinates
      */
     public int[] getCoords(){
         return new int[] {row,col};
@@ -125,7 +123,7 @@ public class Checker extends StackPane {
 
     /**
      * Gets the coordinates on the actual board
-     * @return
+     * @return coordinates
      */
     public int[] getUIcoords(){
         if (row%2 == 0){
@@ -157,9 +155,7 @@ public class Checker extends StackPane {
     private void makeKing(){
         for (int i=0; i < 3; i++){
             Polygon polygon = new Polygon();
-            polygon.getPoints().addAll(new Double[]{
-                    10.0, 0.0,  0.0, 10.0,20.0, 10.0
-                     });
+            polygon.getPoints().addAll(10.0, 0.0, 0.0, 10.0,20.0, 10.0);
             polygon.setFill(Color.KHAKI);
             //polygon.setStrokeWidth(0.5);
             //polygon.setStroke(Color.BLACK);
@@ -170,8 +166,7 @@ public class Checker extends StackPane {
     }
 
     /**
-     * Returns true if checker is a king
-     * @return
+     * @return true if checker is a king
      */
     public boolean isKing() {
         return king;
@@ -179,7 +174,7 @@ public class Checker extends StackPane {
 
     /**
      * Makes checker king
-     * @param king
+     * @param king true if king, false if not
      */
     public void setKing(boolean king) {
         this.king = king;
