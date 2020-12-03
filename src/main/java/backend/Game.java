@@ -8,17 +8,14 @@ import java.util.Scanner;
 
 /**
  * TODO:
- * add heuristics
- * add pruning
  */
 
 public class Game {
     boolean verbose = false;
     Board b = new Board(verbose);
     String playerName;
-    int human;
-    int cpu;
-    int player;
+    int human, cpu, player;
+    static int white = 1, black =2;
     boolean getRandom = true;
     int difficulty = 0;
 
@@ -94,7 +91,7 @@ public class Game {
             MiniMax mm = new MiniMax(b.getBoard(), b.getCpuColour(), difficulty);
             int[][] move = mm.minimaxmove();
             if (move == null){
-                return getValidMoves(false).get(r.nextInt());
+                return getValidMoves(false).get(r.nextInt(moves.size()));
             }
             else {
                 return move;
@@ -150,6 +147,26 @@ public class Game {
     public boolean possibleCaptures(){
         getValidMoves(false);
         return b.possibleCaptures();
+    }
+
+    public String getError(int[][] move, int colour){
+        if (move[0][0] > move[1][0]+1 || move[0][0] < move[1][0]-1){
+            return "Too far";
+        }
+        if (b.getBoard()[move[1][0]][move[1][1]] != 8){
+            return "Target not empty";
+        }
+        System.out.println(colour);
+        System.out.println(""+move[1][0]+move[0][0]);
+        System.out.println(""+move[1][1]+move[0][1]);
+        if ((colour == white && move[1][0] < move[0][0]) || (colour == black && move[1][0] > move[0][0])){
+            return "Can't travel in that direction";
+        }
+        if (move[0][0]==move[1][0]){
+            return "Can't move to the same row";
+        }
+        return "Unable to make that move";
+
     }
 
 

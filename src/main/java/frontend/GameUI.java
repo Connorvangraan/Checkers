@@ -184,10 +184,11 @@ public class GameUI extends Application {
             }
             else {
                 c.cancelMove();
+                popup(game.getError(move, player));
             }
         } else {
-            System.out.println("No move");
             c.cancelMove();
+            popup(game.getError(move, player));
         }
         c.kingCheck();
     }
@@ -279,6 +280,23 @@ public class GameUI extends Application {
         }
     }
 
+    public void popup(String message){
+        Stage s = new Stage();
+        Label l = new Label(message);
+        l.setStyle("-fx-font-weight: bold; -fx-font-size: 10pt;");
+        Button b = new Button("OK");
+        b.setStyle("-fx-font-weight: bold;");
+        b.setOnAction(e -> {
+            List<Window> windows = Window.getWindows();
+            windows.get(1).hide();
+        });
+        VBox v = new VBox(l,b);
+        Scene scene = new Scene(v);
+        s.setScene(scene);
+        s.setTitle("Error");
+        s.show();
+    }
+
     public void startScreen(Stage s) {
         VBox v = new VBox();
         Button startb = new Button("Start");
@@ -344,11 +362,11 @@ public class GameUI extends Application {
                     difficulty = 0;
                     System.out.println(difficulty);
                 } else if (diff.equals("Medium")) {
-                    difficulty = 2;
-                } else if (diff.equals("Hard")) {
                     difficulty = 4;
-                } else if (diff.equals("Very Hard")) {
+                } else if (diff.equals("Hard")) {
                     difficulty = 6;
+                } else if (diff.equals("Very Hard")) {
+                    difficulty = 10;
                 }
                 try {
                     gameScreen();
