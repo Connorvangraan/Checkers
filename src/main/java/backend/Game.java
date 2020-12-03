@@ -58,6 +58,7 @@ public class Game {
     }
 
     /**
+     * 2B
      * Gets a list of all the valid moves for the user
      * @param show true if you want to see the move list
      * @return List of valid moves
@@ -109,6 +110,7 @@ public class Game {
 
 
     /**
+     * 2B
      * Gets the cpu move for the cpu turn
      * If difficulty is 0 then random moves are used
      * @return move
@@ -129,8 +131,14 @@ public class Game {
             else {
                 return move;
             }
-
         }
+    }
+
+    public int[][] getUserMove(){
+        ArrayList<int[][]> moves = getValidMoves(false);
+        MiniMax mm = new MiniMax(b.getBoard(), b.getHumanColour(), 4);
+        int[][] move = mm.minimaxmove();
+        return move;
     }
 
     /**
@@ -226,6 +234,7 @@ public class Game {
     }
 
     /**
+     * 1B
      * Sets the difficulty to x
      * @param x depthlimit
      */

@@ -1,4 +1,4 @@
-package main.java.frontend;
+package main.java;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -10,10 +10,14 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import main.java.backend.Game;
+import main.java.backend.MiniMax;
+import main.java.frontend.Checker;
+import main.java.frontend.Tile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +32,13 @@ public class GameUI extends Application {
     int player, cpu, difficulty;
     String name;
     int[] ready = new int[3];
-    boolean guide = false;
+    boolean guide = true;
     double my,mx;
-    //Group trails = new Group();
+    boolean hint = false;
+
 
     /**
+     * 2A
      *  Creates the UI board
      * @return returns the created board
      * @throws InterruptedException due to use of the time sleep functio
@@ -50,10 +56,8 @@ public class GameUI extends Application {
                     t = new Tile(true, row, col, tilesize);
                     if (row < 3) {
                         c = makeNewChecker(1, row, col);
-                        //System.out.println(""+row+col);
                     } else if (row > 4) {
                         c = makeNewChecker(2, row, col);
-                        //System.out.println(""+row+col);
                     }
                 } else {
                     t = new Tile(false, row, col, tilesize);
@@ -70,6 +74,8 @@ public class GameUI extends Application {
     }
 
     /**
+     * 1A
+     *
      * makes new checker at the given coordinates of the given type, returns the checker
      *
      * @param type the colour of the checker, white = 1 & black = 2
@@ -82,6 +88,7 @@ public class GameUI extends Application {
         checker.setOnMousePressed(event -> {
             mx = event.getSceneX();
             my = event.getSceneY();
+
             ArrayList<int[][]> moves = game.getValidMoves(false);
             for (int[][] move : moves) {
                 if (move[0][0] == checker.getCoords()[0] && move[0][1] == checker.getCoords()[1]) {
@@ -89,7 +96,7 @@ public class GameUI extends Application {
                     int[] target = game.convertCoord(move[1]);
                     //System.out.println("" + move[0] + move[1]);
                     if (guide) {
-                        b[target[0]][target[1]].markTarget();
+                        b[target[0]][target[1]].markTarget(Color.BLUEVIOLET);
                     }
                 }
             }
@@ -130,12 +137,21 @@ public class GameUI extends Application {
             } else {
                 checker.cancelMove();
             }
+
+            if (hint){
+                int[][] bestmove = game.getUserMove();
+                if (bestmove != null){
+                    int[] bestpiece = bestmove[0];
+                    b[bestpiece[0]][game.convertCoord(bestpiece)[1]].markTarget(Color.FORESTGREEN);
+                }
+
+            }
         });
         return checker;
     }
 
     /**
-     *
+     *1A
      * @param c the checker being moved
      * @param newCoords the coordinates the checker is being moved to
      * @throws InterruptedException due to use of the time sleep function
@@ -199,6 +215,7 @@ public class GameUI extends Application {
     }
 
     /**
+     * 1A, 2B
      * Run the cpu move, called after a user move
      * @throws InterruptedException due to use of the time sleep functio
      */
@@ -207,8 +224,6 @@ public class GameUI extends Application {
         TimeUnit.MILLISECONDS.sleep(50);
         if (game.getValidMoves(false).size() > 0) {
             int[][] move = game.getcpuMove();
-            //System.out.println("CPU move ");
-            //System.out.println("Move: " + move[0][0] + move[0][1] + " " + move[1][0] + move[1][1]);
 
             if (move[1][0] == move[0][0] + 2 || move[1][0] == move[0][0] - 2) {
                 int[] captured = game.makeCapture(move);
@@ -222,7 +237,6 @@ public class GameUI extends Application {
                 }
                 c.kingCheck();
                 game.getValidMoves(false);
-                //if (game.checkVictory()) ## end game
                 if (game.possibleCaptures()) {
                     cpuMove();
                 }
@@ -307,12 +321,12 @@ public class GameUI extends Application {
     }
 
     /**
+     * 1B
      * The following all create a new window
      * Start, rules, game and end
      * Game is the board GUI
      *
      */
-
     public void startScreen(Stage s) {
         VBox v = new VBox();
         Button startb = new Button("Start");
@@ -400,12 +414,17 @@ public class GameUI extends Application {
             guide = !guide;
         });
 
+        ToggleButton hints = new ToggleButton("Click for hints");
+        guidelines.setOnAction(e -> {
+            hint = !hint;
+        });
+
         Button rules = new Button("Rules");
         rules.setOnAction(e -> rulesScreen());
 
         Button quitb = new Button("Quit");
         quitb.setOnAction(e -> Platform.exit());
-        v.getChildren().addAll(diffbox, guidelines, rules, quitb);
+        v.getChildren().addAll(diffbox, guidelines, hints, rules, quitb);
         Scene scene = new Scene(v);
         s.setTitle("Checkers");
         s.setScene(scene);
@@ -492,7 +511,5 @@ public class GameUI extends Application {
         startScreen(primaryStage);
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+
 }

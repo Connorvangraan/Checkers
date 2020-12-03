@@ -66,13 +66,15 @@ public class Tile extends Rectangle {
     }
 
     /**
+     * 4E
      * Marks tile with movement guidelines
      */
-    public void markTarget(){
-        setStroke(Color.BLUEVIOLET);
+    public void markTarget(Color c){
+        setStroke(c);
     }
 
     /**
+     * 4E
      * Removes movement guidelines
      */
     public void unmark(){

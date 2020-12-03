@@ -15,6 +15,7 @@ public class MiniMax {
     int[][] bestMove;
 
     /**
+     * 1B, this whole class is 2C
      * Sets up the minimax function to be run on the board
      * @param board the current backend board
      * @param maximisingPlayer the player using the minimax
@@ -66,11 +67,12 @@ public class MiniMax {
      * @return
      */
     public int[][] minimaxmove() {
-        minimax(b, difficulty, maximisingPlayer, -1, 1); //, -1, 1
+        minimax(b, difficulty, maximisingPlayer, -1, 1);
         return bestMove;
     }
 
     /**
+     * 2D
      * The actual minimax function that determines the best move
      * Board cloned before being passes in param during recursion
      * @param board
@@ -122,11 +124,11 @@ public class MiniMax {
                     tempmove = move;
                     bestscore = currentscore;
                 }
-                if (alpha <= currentscore){
+                if (alpha < currentscore){
                     alpha = currentscore;
                 }
 
-                if (beta <= alpha){
+                if (beta < alpha){
                     break;
                 }
 
@@ -150,10 +152,10 @@ public class MiniMax {
                     bestscore = currentscore;
                     tempmove = move;
                 }
-                if (currentscore <= beta){
+                if (currentscore < beta){
                     beta = currentscore;
                 }
-                if (beta <= alpha){
+                if (beta < alpha){
                     break;
                 }
             }
@@ -196,10 +198,8 @@ public class MiniMax {
         int diffwhiteblack = whitecheckers - blackcheckers;
 
         if (maximisingPlayer == white) {
-            int checkerdiff = board.getWhiteCheckers() - board.getBlackCheckers();
             return diffwhiteblack + (whitekings*1.5);
         } else {
-            int checkerdiff = board.getBlackCheckers() - board.getWhiteCheckers();
             return diffblackwhite + (blackkings*1.5);
         }
 

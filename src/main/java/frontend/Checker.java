@@ -107,6 +107,7 @@ public class Checker extends StackPane {
     }
 
     /**
+     * 3C
      * Run when an invalid move is attempted. Returns the check to original location
      */
     public void cancelMove(){
@@ -135,6 +136,7 @@ public class Checker extends StackPane {
     }
 
     /**
+     * 4C
      * Makes the checker king if it has reached the baseline
      */
     public void kingCheck(){
@@ -150,6 +152,7 @@ public class Checker extends StackPane {
     }
 
     /**
+     * 4C
      * Draws the little crown on the checker, which is actually just three triangles next to each other, but dont tell the checker that
      */
     private void makeKing(){
@@ -173,6 +176,7 @@ public class Checker extends StackPane {
     }
 
     /**
+     * 4D
      * Makes checker king
      * @param king true if king, false if not
      */

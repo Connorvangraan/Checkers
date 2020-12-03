@@ -91,6 +91,7 @@ public class Board {
 
 
     /**
+     * 2A
      * Sets up the board
      * State rep = int[rows = 8] [columns - 4]
      * State rep only covers squares that can be moved too
@@ -243,6 +244,7 @@ public class Board {
     }
 
     /**
+     * 3A&D
      * Checks if a capture is valid
      * @param x source coord
      * @param y movement target coord
@@ -412,6 +414,7 @@ public class Board {
     }
 
     /**
+     * 3A&D
      * Checks if a move is valid
      * @param x source coord
      * @param y target coord
@@ -558,6 +561,7 @@ public class Board {
     }
 
     /**
+     * 2B, 3A&D, 4A&B
      * Finds all possible moves for the current player
      * @return arraylist of all legal moves
      */
