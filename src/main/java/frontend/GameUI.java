@@ -64,8 +64,7 @@ public class GameUI extends Application {
         return root;
     }
 
-    double my;
-    double mx;
+    double my,mx;
 
     public Checker makeNewChecker(int type, int row, int col) {
         Checker checker = new Checker(type, row, col, tilesize);

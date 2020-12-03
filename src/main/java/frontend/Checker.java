@@ -5,9 +5,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Polygon;
-import main.java.testingboard.PieceType;
-
-import static main.java.testingboard.GameUI.TILE_SIZE;
 
 
 public class Checker extends StackPane {
@@ -102,6 +99,7 @@ public class Checker extends StackPane {
     public int[] getCoords(){
         return new int[] {row,col};
     }
+
     public int[] getUIcoords(){
         if (row%2 == 0){
             return new int[] {row, (col*2)+1};
@@ -124,6 +122,7 @@ public class Checker extends StackPane {
             makeKing();
         }
     }
+
     public void makeKing(){
         for (int i=0; i < 3; i++){
             Polygon polygon = new Polygon();

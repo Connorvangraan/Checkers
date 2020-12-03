@@ -9,7 +9,6 @@ public class Board {
     static int black = 2;
     static int kingwhite = 3;
     static int kingblack = 4;
-    BoardGUI gui;
     int currentPlayer;
     int currentColour;
     int humanColour;

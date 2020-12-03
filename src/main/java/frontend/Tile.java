@@ -62,6 +62,7 @@ public class Tile extends Rectangle {
     public void markTarget(){
         setStroke(Color.BLUEVIOLET);
     }
+
     public void unmark(){
         setStroke(Color.TRANSPARENT);
     }
