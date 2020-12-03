@@ -84,15 +84,22 @@ public class Game {
     }
 
     public int[][] getcpuMove(){
+        Random r = new Random();
         ArrayList<int[][]> moves = getValidMoves(false);
         if (difficulty == 0){
-            Random r = new Random();
             int n = r.nextInt(moves.size());
             return moves.get(n);
         }
         else{
             MiniMax mm = new MiniMax(b.getBoard(), b.getCpuColour(), difficulty);
-            return mm.minimaxmove();
+            int[][] move = mm.minimaxmove();
+            if (move == null){
+                return getValidMoves(false).get(r.nextInt());
+            }
+            else {
+                return move;
+            }
+
         }
     }
 

@@ -102,17 +102,17 @@ public class MiniMax {
                 // do move on clone board here
                 Board clone = cloneBoard(board);
                 clone.makeMove(move[0], move[1], maximisingPlayer); //put move here);
-               /*
+
                if (move[1][0] == move[0][0]+2 || move[1][0] == move[0][0]-2) {
-                   board.findMoves();
-                   if (board.captureOption) {
+                   clone.findMoves();
+                   if (clone.captureOption) {
                        currentscore = minimax(clone, depth - 1, maximisingPlayer);
                        if (bestscore < currentscore) {
                            tempmove = move;
                            bestscore = currentscore;
                        }
                    }
-               }*/
+               }
                 currentscore = minimax(clone, depth - 1, minimisingPlayer);
                 //bestscore = Math.max(bestscore, currentscore);
                 if (bestscore < currentscore) {
@@ -124,7 +124,18 @@ public class MiniMax {
                 Board clone = cloneBoard(board);
                 clone.makeMove(move[0], move[1], minimisingPlayer);//put move here);
                 currentscore = minimax(clone, depth - 1, maximisingPlayer);
-                //bestscore = Math.min(bestscore, currentscore);
+
+                if (move[1][0] == move[0][0]+2 || move[1][0] == move[0][0]-2) {
+                    clone.findMoves();
+                    if (clone.captureOption) {
+                        currentscore = minimax(clone, depth - 1, minimisingPlayer);
+                        if (bestscore < currentscore) {
+                            tempmove = move;
+                            bestscore = currentscore;
+                        }
+                    }
+                }
+
                 if (bestscore > currentscore) {
                     bestscore = currentscore;
                     tempmove = move;

@@ -12,7 +12,7 @@ import static main.java.testingboard.GameUI.TILE_SIZE;
 
 public class Checker extends StackPane {
     int type, row, col, size;
-    double mx, my, originx, originy;
+    double originx, originy;
     boolean king = false;
 
     public Checker(int t, int row, int col, int size){ // 1 = white , 2 = black

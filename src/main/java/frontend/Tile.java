@@ -1,12 +1,16 @@
 package main.java.frontend;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 
+import java.util.concurrent.TimeUnit;
+
 public class Tile extends Rectangle {
-    int row, col;
+    int row, col, size;
     boolean real;
     Checker checker;
+    Trail trail;
 
     public Tile(boolean real, int row, int col,int size) {
         this.row = row;
@@ -28,8 +32,18 @@ public class Tile extends Rectangle {
 
     }
 
-    public void occupy(Checker c){
+    public void occupy(Checker c) throws InterruptedException {
         checker = c;
+        trail = new Trail(size, row, col);
+        //TimeUnit.SECONDS.sleep(1);
+    }
+
+    public void makeTrail(Trail t) throws InterruptedException {
+        trail = t;
+    }
+
+    public void removeTrail(){
+        trail = null;
     }
 
     public boolean occupied(){
