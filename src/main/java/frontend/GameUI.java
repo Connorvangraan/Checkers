@@ -1,4 +1,4 @@
-package main.java;
+package main.java.frontend;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -511,5 +511,8 @@ public class GameUI extends Application {
         startScreen(primaryStage);
     }
 
+    public static void main(String[] args){
+        launch(args);
+    }
 
 }
